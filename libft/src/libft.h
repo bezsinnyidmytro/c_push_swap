@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <fcntl.h>
 # include <stdio.h>
+# include <inttypes.h>
 
 # define GNL_BUFF_SIZE 4
 

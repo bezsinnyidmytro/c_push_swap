@@ -16,7 +16,9 @@ PUSH_SWAP_NAME = 	push_swap
 PUSH_SWAP_SRC_DIR = push_swap_src/
 
 CHECKER_FILES =		checker.c
-PUSH_SWAP_FILES = 	push_swap.c
+PUSH_SWAP_FILES = 	push_swap.c \
+					push_swap_list_to_arr_sort.c \
+					stack_split_functions.c
 COMMON_FILES = 		stack_commands.c \
 					common_functions.c
 FILES = 			$(CHECKER_FILES) $(PUSH_SWAP_FILES) $(COMMON_FILES)

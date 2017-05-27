@@ -36,21 +36,34 @@ int				main(int ac, char **av)
 	t_stack		*b;
 	char		*command;
 	int			debug;
-	int			arg_bound;
+	int			flags_count;
+	//char		**arg_s;
 
 	command = NULL;
 	a = NULL;
 	b = NULL;
-	i = ac;
-	debug = 0;
+	flags_count = ps_flag_parse(ac, av);
+	//printf("The flag_count: %i\n", flag_count);
+	i = ac - flags_count;
+	//printf("The i = ac - flag_count: %i\n", i);
+	debug = flags_count ? 1 : 0;
 	if (i > 1)
 	{
-		arg_bound = 0;
-		if (ft_strcmp(av[1], "-d") == 0 && (debug = 1))
-			arg_bound++;
-		// Push element to the A
-		while (--i > arg_bound)
-			push(&a, s_el_create(ft_atoi(av[i])));
+		// if (i == 2)
+		// {
+		// 	arg_s = ft_strsplit(av[1], ' ');
+		// 	a = init_stack(ft_countwords(av[1], ' '), arg_s, -1);									// if split is used arg_s[0] should be used
+		// }
+		//else
+		a = init_stack(i - 1, av + flags_count + 1);
+
+		// if (ft_strcmp(av[1], "-d") == 0 && (debug = 1))		// need to modify in case when ac == 2
+		// 	arg_bound++;
+		
+		
+		// // Push element to the A
+		// while (--i > arg_bound)
+		// 	push(&a, s_el_create(ft_atoi(arg_s[i])));
 		
 		// iter = a;
 		// printf("\tStack A:\n\t\t");
@@ -90,13 +103,14 @@ int				main(int ac, char **av)
 			printf("%sKO\n", KRED);
 		// if (!debug)
 		// {
-		// 	// Print values form A
-		// 	printf("\nStack A after processing commands:\n");
-		// 	while (a)
-		// 	{
-		// 		printf("%d ", a->val);
-		// 		a = a->next;
-		// 	}
+			// Print values form A
+			// printf("\nStack A after processing commands:\n");
+			// while (a)
+			// {
+			// 	printf("%d ", a->val);
+			// 	a = a->next;
+			// }
+			// printf("\n");
 
 		// 	// Print values from B
 		// 	printf("\nStack B after processing commands:\n");
@@ -111,7 +125,6 @@ int				main(int ac, char **av)
 
 	return (1);
 }
-
 
 
 

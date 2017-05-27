@@ -39,6 +39,13 @@ typedef struct 		s_env
 	// size_t			b_len;
 }					t_env;
 
+typedef struct		s_plist
+{
+	int				count;
+	char			to;
+	struct s_plist	*next;
+}					t_plist;
+
 int 				srt_asc(int a, int b);
 
 int 				is_sorted(t_stack *s_top, int (*f)());
@@ -50,7 +57,14 @@ void				swap(t_stack **s_top);
 void				rotate(t_stack **s_top);
 void				rrotate(t_stack **s_top);
 void				command_dispatcher(t_stack **a, t_stack **b, char *cmd, int announce);
+t_stack				*init_stack(int n_arg, char **av);
+int					ps_flag_parse(int ac, char **av);
+int					list_size(t_stack *stack);
+
+int					*list_to_arr_sort(t_stack *list);
 
 void				debug_info(t_stack const *a, t_stack const *b, char *cmd);
+
+void				stack_main_split(t_stack **a, t_stack **b);
 
 #endif
