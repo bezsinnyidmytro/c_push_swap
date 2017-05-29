@@ -729,6 +729,73 @@ t_plist		*backpush_a(t_env *env, int piv)
 	return (*(env->p_list));
 }
 
+int			stack_find_maxbound(t_env *env, int count)
+{
+	int		max_bound;
+	int		unsort_size;
+	//int		full_size;
+
+	unsort_size = list_size(*(env->b));
+	//full_size = list_size(*(env->a)) + list_size(*(env->b));
+	max_bound = env->sort[unsort_size - count];
+	return (max_bound);
+}
+
+t_plist		*backpush_a_max(t_env *env)
+{
+	//int		i;
+	//int		piv;
+	//int		pushed;
+	int		rot_counter;
+	int		to_push;
+	int		max_bound;
+	//int		r_or_rr;
+
+	//printf("Backpush A:\n");
+
+	//i = (*(env->p_list))->count;
+	//(*(env->p_list))->to = 'A';
+	
+	to_push = ((*(env->p_list))->count / 2) > 6 ? 6 : ((*(env->p_list))->count + 1) / 2;
+
+	//pushed = 0;
+	rot_counter = 0;
+	//printf("Stack here\n");
+	//piv = env->sort[(2 * full_size - 2 * list_size(*(env->a)) - (*(env->p_list))->count) / 2];
+	max_bound = stack_find_maxbound(env, to_push);
+
+
+	// printf("The max bound to find is : %i.\n Need to push: %i.\n Last bpush->count: %i\n", max_bound, to_push, (*(env->p_list))->count);
+	// debug_info(*(env->a), *(env->b), "test");
+
+
+	while (has_higher_piv(*(env->b), max_bound))
+	{
+		while ((*(env->b))->val < max_bound)
+		{
+			//if ((*(env->b))->val < piv && (*(env->b))->next->val >= piv)
+			//	command_dispatcher(env, "sb", 1);
+			//else
+			//{
+				command_dispatcher(env, "rb", 1);
+				rot_counter++;
+			//}
+		}
+		command_dispatcher(env, "pa", 1);
+		//pushed++;
+		//command_dispatcher(env, "pa", 1);
+	}
+	(*(env->p_list))->count -= to_push;
+	//printf("Rot counter B: %i\n", rot_counter);
+
+	while (rot_counter--)									// if not restored before three_sort cause +200 operations
+		command_dispatcher(env, "rrb", 1);
+
+	//printf("Pushed back to A: %i\n", (*p_list)->count);
+	plist_push(env->p_list, plist_el_create(to_push, 'A'));
+	return (*(env->p_list));
+}
+
 t_plist		*backpush_b(t_env *env, int piv, t_plist **a_push, int *rot_ca)
 {
 	//int		rot_counter;
@@ -777,11 +844,13 @@ void		restore_a(t_env *env, int *rot_ca)
 {
 	if (*rot_ca > 0)
 	{
+		//printf("Restore A commands: \n");
 		while ((*rot_ca)--)
 			command_dispatcher(env, "rra", 1);
 	}
 	else if (*rot_ca < 0)
 	{
+		//printf("Restore A commands: \n");
 		while ((*rot_ca)++)
 			command_dispatcher(env, "ra", 1);
 	}
@@ -806,9 +875,17 @@ void		stacks_sort(t_env *env)
 	while (*(env->p_list))
 	{
 		sort_size = list_size(*(env->a));
+		
 		piv2 = env->sort[(2 * full_size - 2 * sort_size - (*(env->p_list))->count) / 2];
-		if ((*(env->p_list))->to == 'B' && (*(env->p_list))->count > 3)
+		// if ((*(env->p_list))->to == 'B' && (*(env->p_list))->count > 3)
+		// 	a_push = backpush_a(env, piv2);
+
+		if ((*(env->p_list))->to == 'B' && (*(env->p_list))->count > 3)			// probably can delete if-part->to == 'B'
+		{
 			a_push = backpush_a(env, piv2);
+			// a_push = backpush_a_max(env);
+		}
+
 		while (a_push->count > 3)
 		{
 			piv = env->sort[(2 * full_size - sort_size - list_size(*(env->a))) / 2];
