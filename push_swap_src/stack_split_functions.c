@@ -281,6 +281,7 @@ void		process_perm_cases(t_env *env, int permA, int permB)
 		}
 		else if (permA == 4)
 		{
+			//printf("This is perm 4-4\n");
 			command_dispatcher(env, "ss", 1);
 			common_triple_cmd(env);
 		}
@@ -564,6 +565,10 @@ void		sort_three(t_env *env, t_plist *pa, int numb)
 	int		numa;
 	int		permA;
 	int		permB;
+	//t_stack	*iter;
+	//int		i;
+
+	//printf("Sort three\n");
 
 	numa = pa ? pa->count : list_size(*(env->a));
 	numa = (numa > 3) ? 3 : numa;
@@ -586,7 +591,26 @@ void		sort_three(t_env *env, t_plist *pa, int numb)
 	}
 	else if (numb == 3)
 		permB = get_bperm_case((*(env->b))->val, (*(env->b))->next->val, (*(env->b))->next->next->val);
-	//printf("Permutation caseA: %i. caseB: %i\n.", permA, permB);
+	
+	// printf("Permutation caseA: %i. caseB: %i\n.", permA, permB);
+	// printf("NumA: %i, NumB: %i\n", numa, numb);
+	// iter = *(env->a);
+	// i = -1;
+	// printf("Stack A:\n");
+	// while (++i < 3 && iter)
+	// {
+	// 	printf("%5i", iter->val);
+	// 	iter = iter->next;
+	// }
+	// iter = *(env->b);
+	// i = -1;
+	// printf("\n\nStack B:\n");
+	// while (++i < 3 && iter)
+	// {
+	// 	printf("%5i", iter->val);
+	// 	iter = iter->next;
+	// }
+	// printf("\n\n");
 
 	process_perm_cases(env, permA, permB);
 
@@ -650,17 +674,25 @@ int			rot_or_rrot(t_stack *stack, int piv, int (*ord)(), int (*has)())
 		stack = stack->next;
 	}
 	if (first > stack_size / 2 && last > stack_size / 2)
+	{
+		//printf("RR\n");
 		return (0);
+	}
+	//printf("R\n");
 	return (1);
 	//return ((first < stack_size / 2) ? 1 : 0);
 }
 
+//t_plist		*backpush_a(t_env *env, int piv, int *rot_cb)
 t_plist		*backpush_a(t_env *env, int piv)
 {
 	//int		i;
 	//int		piv;
 	int		pushed;
 	int		rot_counter;
+	//int		r_or_rr;
+
+	//printf("Backpush A:\n");
 
 	//i = (*(env->p_list))->count;
 	//(*(env->p_list))->to = 'A';
@@ -669,47 +701,91 @@ t_plist		*backpush_a(t_env *env, int piv)
 	rot_counter = 0;
 	//printf("Stack here\n");
 	//piv = env->sort[(2 * full_size - 2 * list_size(*(env->a)) - (*(env->p_list))->count) / 2];
+	
 	while (has_higher_piv(*(env->b), piv))
 	{
 		while ((*(env->b))->val < piv)
 		{
-			command_dispatcher(env, "rb", 1);
-			rot_counter++;
+			//if ((*(env->b))->val < piv && (*(env->b))->next->val >= piv)
+			//	command_dispatcher(env, "sb", 1);
+			//else
+			//{
+				command_dispatcher(env, "rb", 1);
+				rot_counter++;
+			//}
 		}
 		command_dispatcher(env, "pa", 1);
 		pushed++;
 		//command_dispatcher(env, "pa", 1);
 	}
 	(*(env->p_list))->count -= pushed;
-	while (rot_counter--)
+	//printf("Rot counter B: %i\n", rot_counter);
+
+	while (rot_counter--)									// if not restored before three_sort cause +200 operations
 		command_dispatcher(env, "rrb", 1);
+
 	//printf("Pushed back to A: %i\n", (*p_list)->count);
 	plist_push(env->p_list, plist_el_create(pushed, 'A'));
 	return (*(env->p_list));
 }
 
-t_plist		*backpush_b(t_env *env, int piv, t_plist **a_push)
+t_plist		*backpush_b(t_env *env, int piv, t_plist **a_push, int *rot_ca)
 {
-	int		rot_counter;
+	//int		rot_counter;
 	int		pushed;
+	int		r_or_rr;
+
+	// if (*rot_ca)
+	// 	printf("\n");
+	//printf("Backpush B:\n");
 
 	pushed = 0;
-	rot_counter = 0;
+	//rot_counter = 0;
 	while (has_lower_piv(*(env->a), piv))
 	{
+
+		r_or_rr = rot_or_rrot(*(env->a), piv, &ord_l, &has_lower_piv);
+		
 		while ((*(env->a))->val >= piv)
 		{
-			command_dispatcher(env, "ra", 1);
-			rot_counter++;
+			//if ((*(env->a))->val >= piv && (*(env->a))->next->val < piv)
+			//	command_dispatcher(env, "sa", 1);
+			if (r_or_rr)
+			{
+				command_dispatcher(env, "ra", 1);
+				(*rot_ca)++;
+			}
+			else
+			{
+				command_dispatcher(env, "rra", 1);
+				(*rot_ca)--;
+			}
 		}
 		command_dispatcher(env, "pb", 1);
 		pushed++;
 	}
 	(*a_push)->count -= pushed;
-	while (rot_counter--)								// need to return stack to primal state only before three_sort
-		command_dispatcher(env, "rra", 1);
+	
+	//while (rot_counter--)								// need to return stack to primal state only before three_sort
+	//	command_dispatcher(env, "rra", 1);
+	
 	//printf("Pushed bakc to B: %i\n", pushed);
 	return (plist_el_create(pushed, 'B'));
+}
+
+void		restore_a(t_env *env, int *rot_ca)
+{
+	if (*rot_ca > 0)
+	{
+		while ((*rot_ca)--)
+			command_dispatcher(env, "rra", 1);
+	}
+	else if (*rot_ca < 0)
+	{
+		while ((*rot_ca)++)
+			command_dispatcher(env, "ra", 1);
+	}
+	*rot_ca = 0;
 }
 
 void		stacks_sort(t_env *env)
@@ -720,6 +796,11 @@ void		stacks_sort(t_env *env)
 	int		full_size;
 	int		sort_size;
 	int		numb;
+	int		rot_ca;
+	//int		rot_cb;
+
+	rot_ca = 0;
+	//rot_cb = 0;
 
 	full_size = list_size(*(env->a)) + list_size(*(env->b));
 	while (*(env->p_list))
@@ -732,10 +813,14 @@ void		stacks_sort(t_env *env)
 		{
 			piv = env->sort[(2 * full_size - sort_size - list_size(*(env->a))) / 2];
 			//printf("The pivot is: %i\n", piv);
-			plist_push(env->p_list, backpush_b(env, piv, &a_push));
+			plist_push(env->p_list, backpush_b(env, piv, &a_push, &rot_ca));
 		}
 
-		numb = ((*(env->p_list))->to == 'B') ? (*(env->p_list))->count : 0;
+		//numb = ((*(env->p_list))->to == 'B') ? (*(env->p_list))->count : 0;
+		numb = ((*(env->p_list))->to == 'B') ? (*(env->p_list))->count : (*(env->p_list))->next->count;
+		//if ((*(env->p_list))->to == 'A')
+		//	printf("Hello it was A :)\n");
+		restore_a(env, &rot_ca);
 		sort_three(env, a_push, numb);
 		//printf("On Remove Plist\n");
 		plist_removeifa(env->p_list);
