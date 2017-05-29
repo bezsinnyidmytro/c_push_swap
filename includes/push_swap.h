@@ -47,6 +47,7 @@ typedef struct 		s_env
 }					t_env;
 
 int 				srt_asc(int a, int b);
+int 				srt_desc(int a, int b);
 
 int 				is_sorted(t_stack *s_top, int (*f)());
 void				error_call(char *message);
@@ -67,5 +68,7 @@ int					*list_to_arr_sort(t_stack *list);
 void				debug_info(t_stack const *a, t_stack const *b, char *cmd);
 
 void				stack_main_split(t_env *env);
+
+int					rot_or_rrot(t_stack *stack, int piv, int (*ord)(), int (*has)());
 
 #endif

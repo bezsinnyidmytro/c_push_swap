@@ -89,6 +89,17 @@ int			has_lower_piv(t_stack *a, int piv)
 	return (0);
 }
 
+int			has_higher_piv(t_stack *b, int piv)
+{
+	while (b)
+	{
+		if (b->val >= piv)
+			return (1);
+		b = b->next;
+	}
+	return (0);
+}
+
 int			get_aperm_case(int a, int b, int c)
 {
 	int		perm_case;
@@ -587,15 +598,93 @@ void		sort_three(t_env *env, t_plist *pa, int numb)
 	}
 }
 
-t_plist		*backpush_a(t_env *env)
-{
-	int		i;
+// t_plist		*backpush_a(t_env *env)
+// {
+// 	int		i;
 
-	i = (*(env->p_list))->count;
-	(*(env->p_list))->to = 'A';
-	while (i--)
+// 	i = (*(env->p_list))->count;
+// 	(*(env->p_list))->to = 'A';
+// 	while (i--)
+// 		command_dispatcher(env, "pa", 1);
+// 	//printf("Pushed back to A: %i\n", (*p_list)->count);
+// 	return (*(env->p_list));
+// }
+
+// for rot_or_rrot
+int			ord_l(int el, int piv)
+{
+	return (el < piv);
+}
+
+int			ord_h(int el, int piv)
+{
+	return (el >= piv);
+}
+
+// int			rot_or_rrot(t_stack *stack, int piv, int (*ord)(), int (*has)())
+int			rot_or_rrot(t_stack *stack, int piv, int (*ord)(), int (*has)())
+{
+	// Predefined that stack has at least one value to push
+	int		first;
+	int		last;
+	int		stack_size;
+	//int		i;
+
+	// debug_info(stack, NULL, "test");
+	// printf("Pivot is: %i\n", piv);
+
+	stack_size = list_size(stack);
+	first = 1;
+	while (1)
+	{
+		if ((*ord)(stack->val, piv))
+			break ;
+		first++;
+		stack = stack->next;
+	}
+	last = first;
+	stack = stack->next;
+	while ((*has)(stack, piv))
+	{
+		last++;
+		stack = stack->next;
+	}
+	if (first > stack_size / 2 && last > stack_size / 2)
+		return (0);
+	return (1);
+	//return ((first < stack_size / 2) ? 1 : 0);
+}
+
+t_plist		*backpush_a(t_env *env, int piv)
+{
+	//int		i;
+	//int		piv;
+	int		pushed;
+	int		rot_counter;
+
+	//i = (*(env->p_list))->count;
+	//(*(env->p_list))->to = 'A';
+	
+	pushed = 0;
+	rot_counter = 0;
+	//printf("Stack here\n");
+	//piv = env->sort[(2 * full_size - 2 * list_size(*(env->a)) - (*(env->p_list))->count) / 2];
+	while (has_higher_piv(*(env->b), piv))
+	{
+		while ((*(env->b))->val < piv)
+		{
+			command_dispatcher(env, "rb", 1);
+			rot_counter++;
+		}
 		command_dispatcher(env, "pa", 1);
+		pushed++;
+		//command_dispatcher(env, "pa", 1);
+	}
+	(*(env->p_list))->count -= pushed;
+	while (rot_counter--)
+		command_dispatcher(env, "rrb", 1);
 	//printf("Pushed back to A: %i\n", (*p_list)->count);
+	plist_push(env->p_list, plist_el_create(pushed, 'A'));
 	return (*(env->p_list));
 }
 
@@ -617,7 +706,7 @@ t_plist		*backpush_b(t_env *env, int piv, t_plist **a_push)
 		pushed++;
 	}
 	(*a_push)->count -= pushed;
-	while (rot_counter--)
+	while (rot_counter--)								// need to return stack to primal state only before three_sort
 		command_dispatcher(env, "rra", 1);
 	//printf("Pushed bakc to B: %i\n", pushed);
 	return (plist_el_create(pushed, 'B'));
@@ -627,6 +716,7 @@ void		stacks_sort(t_env *env)
 {
 	t_plist	*a_push;	// for the nearest push to A
 	int		piv;
+	int		piv2;
 	int		full_size;
 	int		sort_size;
 	int		numb;
@@ -635,7 +725,9 @@ void		stacks_sort(t_env *env)
 	while (*(env->p_list))
 	{
 		sort_size = list_size(*(env->a));
-		a_push = backpush_a(env);
+		piv2 = env->sort[(2 * full_size - 2 * sort_size - (*(env->p_list))->count) / 2];
+		if ((*(env->p_list))->to == 'B' && (*(env->p_list))->count > 3)
+			a_push = backpush_a(env, piv2);
 		while (a_push->count > 3)
 		{
 			piv = env->sort[(2 * full_size - sort_size - list_size(*(env->a))) / 2];
@@ -645,6 +737,7 @@ void		stacks_sort(t_env *env)
 
 		numb = ((*(env->p_list))->to == 'B') ? (*(env->p_list))->count : 0;
 		sort_three(env, a_push, numb);
+		//printf("On Remove Plist\n");
 		plist_removeifa(env->p_list);
 		if (numb != 0)
 			plist_pop(env->p_list);				// need to free it ?
@@ -678,6 +771,7 @@ void		stack_main_split(t_env *env)
 	//t_stack	*iter;
 	//t_plist	*tp_iter;
 	int		numb;
+	int		path;
 	//char	*cmd_full_str;
 
 	// full cmd string
@@ -697,11 +791,20 @@ void		stack_main_split(t_env *env)
 		piv = env->sort[(stack_len + pushed_total) / 2];
 		// printf("Piv is: %i\n", piv);
 		// sleep(1);
+
+		// if (has_lower_piv(*(env->a), piv))
+		// 	rot_or_rrot(*(env->a), piv, &ord_l, &has_lower_piv);
+		path = rot_or_rrot(*(env->a), piv, &ord_l, &has_lower_piv);
+
 		while (has_lower_piv(*(env->a), piv))
-		{
+		{	
 			while ((*(env->a))->val >= piv)
 			{
-				command_dispatcher(env, "ra", 1); //rotate(a);
+				// Was only ra and it seems that it was better on 3-4 commands
+				if (path)
+					command_dispatcher(env, "ra", 1); //rotate(a);
+				else
+					command_dispatcher(env, "rra", 1);
 			}
 			command_dispatcher(env, "pb", 1); //push(b, pop(a));
 			pushed++;
