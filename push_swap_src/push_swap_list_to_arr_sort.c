@@ -131,7 +131,11 @@ int		*list_to_arr_sort(t_stack *list)
 	// printf("\n\n");
 	// //piv = (tab_size % 2) ? int_tab[tab_size / 2] : (int_tab[tab_size / 2 + 1] + int_tab[tab_size / 2 -1]) / 2.0;
 	// piv = int_tab[tab_size / 2];
-	is_sorted_tab(int_tab, 0, tab_size - 1, &asc) ? printf("Is sorted: OK\n") : printf("Is sorted: KO\n");
+
+
+	//is_sorted_tab(int_tab, 0, tab_size - 1, &asc) ? printf("Is sorted: OK\n") : printf("Is sorted: KO\n");
+
+	
 	// printf("\nNumber of element swaps: %i\n", swaps);
 	// printf("\nPivot is: %f\n", piv);
 	// i = -1;
