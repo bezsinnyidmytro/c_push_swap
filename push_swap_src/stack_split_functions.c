@@ -25,12 +25,12 @@ char	*ft_dstrjoin(char *s1, char *s2, int ff1, int ff2)
 	return (str_new);
 }
 
-void	command_dispatcher2(t_stack **a, t_stack **b, char *cmd, int announce, char **cmd_full_str)
-{
-	command_dispatcher(a, b, cmd, announce);
-	cmd = ft_dstrjoin(cmd, "\n", 0, 0);																						// huge troubles with free
-	*cmd_full_str = ft_dstrjoin(*cmd_full_str, cmd, 0, 0);
-}
+// void	command_dispatcher2(t_stack **a, t_stack **b, char *cmd, int announce, char **cmd_full_str)
+// {
+// 	command_dispatcher(env, cmd, announce);
+// 	cmd = ft_dstrjoin(cmd, "\n", 0, 0);																						// huge troubles with free
+// 	*cmd_full_str = ft_dstrjoin(*cmd_full_str, cmd, 0, 0);
+// }
 
 t_plist		*plist_el_create(int val, char to)
 {
@@ -189,39 +189,39 @@ int			has_stackable_cmd(char *cmd, char **iter)
 	return (0);
 }
 
-void		run_common_cmd(t_stack **a, t_stack **b, char *cmd)
+void		run_common_cmd(t_env *env, char *cmd)
 {
 	int		len;
 
 	len = ft_strlen(cmd);
 	cmd[len - 1] = (cmd[len - 1] == 'a') ? 's' : 'r';
-	command_dispatcher(a, b, cmd, 1);
+	command_dispatcher(env, cmd, 1);
 }
 
-void		common_triple_cmd(t_stack **a, t_stack **b)
+void		common_triple_cmd(t_env *env)
 {
-	command_dispatcher(a, b, "rr", 1);
-	command_dispatcher(a, b, "ss", 1);
-	command_dispatcher(a, b, "rrr", 1);
+	command_dispatcher(env, "rr", 1);
+	command_dispatcher(env, "ss", 1);
+	command_dispatcher(env, "rrr", 1);
 }
 
-void		run_triple_cmd(t_stack **a, t_stack **b, char stack)
+void		run_triple_cmd(t_env *env, char stack)
 {
 	if (stack == 'a')
 	{
-		command_dispatcher(a, b, "ra", 1);
-		command_dispatcher(a, b, "sa", 1);
-		command_dispatcher(a, b, "rra", 1);
+		command_dispatcher(env, "ra", 1);
+		command_dispatcher(env, "sa", 1);
+		command_dispatcher(env, "rra", 1);
 	}
 	else if (stack == 'b')
 	{
-		command_dispatcher(a, b, "rb", 1);
-		command_dispatcher(a, b, "sb", 1);
-		command_dispatcher(a, b, "rrb", 1);
+		command_dispatcher(env, "rb", 1);
+		command_dispatcher(env, "sb", 1);
+		command_dispatcher(env, "rrb", 1);
 	}
 }
 
-void		process_perm_cases(t_stack **a, t_stack **b, int permA, int permB)
+void		process_perm_cases(t_env *env, int permA, int permB)
 {
 	// t_stack		*a_iter;
 	// t_stack		*b_iter;
@@ -256,266 +256,266 @@ void		process_perm_cases(t_stack **a, t_stack **b, int permA, int permB)
 	if (permA == permB)
 	{
 		if (permA == 1)
-			command_dispatcher(a, b, "ss", 1);
+			command_dispatcher(env, "ss", 1);
 		else if (permA == 2)
 		{
-			common_triple_cmd(a, b);
-			command_dispatcher(a, b, "ss", 1);
+			common_triple_cmd(env);
+			command_dispatcher(env, "ss", 1);
 		}
 		else if (permA == 3)
 		{
-			command_dispatcher(a, b, "ss", 1);
-			common_triple_cmd(a, b);
-			command_dispatcher(a, b, "ss", 1);
+			command_dispatcher(env, "ss", 1);
+			common_triple_cmd(env);
+			command_dispatcher(env, "ss", 1);
 		}
 		else if (permA == 4)
 		{
-			command_dispatcher(a, b, "ss", 1);
-			common_triple_cmd(a, b);
+			command_dispatcher(env, "ss", 1);
+			common_triple_cmd(env);
 		}
 		else if (permA == 5)
-			common_triple_cmd(a, b);
+			common_triple_cmd(env);
 	}
 	else
 	{
 		if (permA == 0)
 		{
 			if (permB == 1 || permB == 3 || permB == 4)
-				command_dispatcher(a, b, "sb", 1);
+				command_dispatcher(env, "sb", 1);
 			if (permB > 1)
-				run_triple_cmd(a, b, 'b');
+				run_triple_cmd(env, 'b');
 			if (permB == 2 || permB == 3)
-				command_dispatcher(a, b, "sb", 1);
+				command_dispatcher(env, "sb", 1);
 
 
 			// if (permB == 1)
-			// 	command_dispatcher(a, b, "sb", 1);
+			// 	command_dispatcher(env, "sb", 1);
 			// else if (permB == 2)
 			// {
-			// 	run_triple_cmd(a, b, 'b');
-			// 	command_dispatcher(a, b, "sb", 1);
+			// 	run_triple_cmd(env, 'b');
+			// 	command_dispatcher(env, "sb", 1);
 			// }
 			// else if (permB == 3)
 			// {
-			// 	command_dispatcher(a, b, "sb", 1);
-			// 	run_triple_cmd(a, b, 'b');
-			// 	command_dispatcher(a, b, "sb", 1);
+			// 	command_dispatcher(env, "sb", 1);
+			// 	run_triple_cmd(env, 'b');
+			// 	command_dispatcher(env, "sb", 1);
 			// }
 			// else if (permB == 4)
 			// {
-			// 	command_dispatcher(a, b, "sb", 1);
-			// 	run_triple_cmd(a, b, 'b');
+			// 	command_dispatcher(env, "sb", 1);
+			// 	run_triple_cmd(env, 'b');
 			// }
 			// else if (permB == 5)
-			// 	run_triple_cmd(a, b, 'b');
+			// 	run_triple_cmd(env, 'b');
 		}
 
 		if (permA == 1)					// no common for 1-5
 		{
 			if (permB == 3 || permB == 4)
-				command_dispatcher(a, b, "ss", 1);
+				command_dispatcher(env, "ss", 1);
 			if (permB == 2 || permB == 3 || permB == 4 || permB == 5)
-				run_triple_cmd(a, b, 'b');
+				run_triple_cmd(env, 'b');
 			if (permB == 2)
-				command_dispatcher(a, b, "ss", 1);
+				command_dispatcher(env, "ss", 1);
 			if (permB == 3)
-				command_dispatcher(a, b, "sb", 1);
+				command_dispatcher(env, "sb", 1);
 			if (permB == 5 || permB == 0)
-				command_dispatcher(a, b, "sa", 1);
+				command_dispatcher(env, "sa", 1);
 
 			// if (permB == 0)
-			// 	command_dispatcher(a, b, "sa", 1);
+			// 	command_dispatcher(env, "sa", 1);
 			// else if (permB == 2)
 			// {
-			// 	run_triple_cmd(a, b, 'b');
-			// 	command_dispatcher(a, b, "ss", 1);
+			// 	run_triple_cmd(env, 'b');
+			// 	command_dispatcher(env, "ss", 1);
 			// }
 			// else if (permB == 3)
 			// {
-			// 	command_dispatcher(a, b, "ss", 1);
-			// 	run_triple_cmd(a, b, 'b');
-			// 	command_dispatcher(a, b, "sb", 1);
+			// 	command_dispatcher(env, "ss", 1);
+			// 	run_triple_cmd(env, 'b');
+			// 	command_dispatcher(env, "sb", 1);
 			// }
 			// else if (permB == 4)
 			// {
-			// 	command_dispatcher(a, b, "ss", 1);
-			// 	run_triple_cmd(a, b, 'b');
+			// 	command_dispatcher(env, "ss", 1);
+			// 	run_triple_cmd(env, 'b');
 			// }
 			// else if (permB == 5)
 			// {
-			// 	run_triple_cmd(a, b, 'b');
-			// 	command_dispatcher(a, b, "sa", 1);
+			// 	run_triple_cmd(env, 'b');
+			// 	command_dispatcher(env, "sa", 1);
 			// }
 		}
 
 		if (permA == 2)
 		{
 			if (permB == 3 || permB == 4)
-				command_dispatcher(a, b, "sb", 1);
+				command_dispatcher(env, "sb", 1);
 			if (permB == 3 || permB == 4 || permB == 5)
-				common_triple_cmd(a, b);
+				common_triple_cmd(env);
 			if (permB == 3)
-				command_dispatcher(a, b, "ss", 1);
+				command_dispatcher(env, "ss", 1);
 			if (permB == 1 || permB == 0)
-				run_triple_cmd(a, b, 'a');
+				run_triple_cmd(env, 'a');
 			if (permB == 1)
-				command_dispatcher(a, b, "ss", 1);
+				command_dispatcher(env, "ss", 1);
 			if (permB == 5 || permB == 4 || permB == 0)
-				command_dispatcher(a, b, "sa", 1);
+				command_dispatcher(env, "sa", 1);
 
 			// if (permB == 0)
 			// {
-			// 	run_triple_cmd(a, b, 'a');
-			// 	command_dispatcher(a, b, "sa", 1);
+			// 	run_triple_cmd(env, 'a');
+			// 	command_dispatcher(env, "sa", 1);
 			// }
 			// else if (permB == 1)
 			// {
-			// 	run_triple_cmd(a, b, 'a');
-			// 	command_dispatcher(a, b, "ss", 1);
+			// 	run_triple_cmd(env, 'a');
+			// 	command_dispatcher(env, "ss", 1);
 			// }
 			// else if (permB == 3)
 			// {
-			// 	command_dispatcher(a, b, "sb", 1);
-			// 	common_triple_cmd(a, b);
-			// 	command_dispatcher(a, b, "ss", 1);
+			// 	command_dispatcher(env, "sb", 1);
+			// 	common_triple_cmd(env);
+			// 	command_dispatcher(env, "ss", 1);
 			// }
 			// else if (permB == 4)
 			// {
-			// 	command_dispatcher(a, b, "sb", 1);
-			// 	common_triple_cmd(a, b);
-			// 	command_dispatcher(a, b, "sa", 1);
+			// 	command_dispatcher(env, "sb", 1);
+			// 	common_triple_cmd(env);
+			// 	command_dispatcher(env, "sa", 1);
 			// }
 			// else if (permB == 5)
 			// {
-			// 	common_triple_cmd(a, b);
-			// 	command_dispatcher(a, b, "sa", 1);
+			// 	common_triple_cmd(env);
+			// 	command_dispatcher(env, "sa", 1);
 			// }
 		}
 
 		if (permA == 3)
 		{
 			if (permB == 1 || permB == 4)
-				command_dispatcher(a, b, "ss", 1);
+				command_dispatcher(env, "ss", 1);
 			else
-				command_dispatcher(a, b, "sa", 1);
+				command_dispatcher(env, "sa", 1);
 			if (permB == 2 || permB == 4 || permB == 5)
-				common_triple_cmd(a, b);
+				common_triple_cmd(env);
 			if (permB == 2)
-				command_dispatcher(a, b, "ss", 1);
+				command_dispatcher(env, "ss", 1);
 			if (permB == 1 || permB == 0)
-				run_triple_cmd(a, b, 'a');
+				run_triple_cmd(env, 'a');
 			if (permB != 2)
-				command_dispatcher(a, b, "sa", 1);
+				command_dispatcher(env, "sa", 1);
 
 			// if (permB == 0)
 			// {
-			// 	command_dispatcher(a, b, "sa", 1);
-			// 	run_triple_cmd(a, b, 'a');
-			// 	command_dispatcher(a, b, "sa", 1);
+			// 	command_dispatcher(env, "sa", 1);
+			// 	run_triple_cmd(env, 'a');
+			// 	command_dispatcher(env, "sa", 1);
 			// }
 			// else if (permB == 1)
 			// {
-			// 	command_dispatcher(a, b, "ss", 1);
-			// 	run_triple_cmd(a, b, 'a');
-			// 	command_dispatcher(a, b, "sa", 1);
+			// 	command_dispatcher(env, "ss", 1);
+			// 	run_triple_cmd(env, 'a');
+			// 	command_dispatcher(env, "sa", 1);
 			// }
 			// else if (permB == 2)
 			// {
-			// 	command_dispatcher(a, b, "sa", 1);
-			// 	common_triple_cmd(a, b);
-			// 	command_dispatcher(a, b, "ss", 1);
+			// 	command_dispatcher(env, "sa", 1);
+			// 	common_triple_cmd(env);
+			// 	command_dispatcher(env, "ss", 1);
 			// }
 			// else if (permB == 4)
 			// {
-			// 	command_dispatcher(a, b, "ss", 1);
-			// 	common_triple_cmd(a, b);
-			// 	command_dispatcher(a, b, "sa", 1);
+			// 	command_dispatcher(env, "ss", 1);
+			// 	common_triple_cmd(env);
+			// 	command_dispatcher(env, "sa", 1);
 			// }
 			// else if (permB == 5)
 			// {
-			// 	command_dispatcher(a, b, "sa", 1);
-			// 	common_triple_cmd(a, b);
-			// 	command_dispatcher(a, b, "sa", 1);
+			// 	command_dispatcher(env, "sa", 1);
+			// 	common_triple_cmd(env);
+			// 	command_dispatcher(env, "sa", 1);
 			// }
 		}
 
 		if (permA == 4)
 		{
 			if (permB == 1 || permB == 3)
-				command_dispatcher(a, b, "ss", 1);
+				command_dispatcher(env, "ss", 1);
 			else
-				command_dispatcher(a, b, "sa", 1);
+				command_dispatcher(env, "sa", 1);
 			if (permB == 2 || permB == 3 || permB == 5)
-				common_triple_cmd(a, b);
+				common_triple_cmd(env);
 			if (permB == 2 || permB == 3)
-				command_dispatcher(a, b, "sb", 1);
+				command_dispatcher(env, "sb", 1);
 			if (permB == 1 || permB == 0)
-				run_triple_cmd(a, b, 'a');
+				run_triple_cmd(env, 'a');
 
 			// if (permB == 0)
 			// {
-			// 	command_dispatcher(a, b, "sa", 1);
-			// 	run_triple_cmd(a, b, 'a');
+			// 	command_dispatcher(env, "sa", 1);
+			// 	run_triple_cmd(env, 'a');
 			// }
 			// else if (permB == 1)
 			// {
-			// 	command_dispatcher(a, b, "ss", 1);
-			// 	run_triple_cmd(a, b, 'a');
+			// 	command_dispatcher(env, "ss", 1);
+			// 	run_triple_cmd(env, 'a');
 			// }
 			// else if (permB == 2)
 			// {
-			// 	command_dispatcher(a, b, "sa", 1);
-			// 	common_triple_cmd(a, b);
-			// 	command_dispatcher(a, b, "sb", 1);
+			// 	command_dispatcher(env, "sa", 1);
+			// 	common_triple_cmd(env);
+			// 	command_dispatcher(env, "sb", 1);
 			// }
 			// else if (permB == 3)
 			// {
-			// 	command_dispatcher(a, b, "ss", 1);
-			// 	common_triple_cmd(a, b);
-			// 	command_dispatcher(a, b, "sb", 1);
+			// 	command_dispatcher(env, "ss", 1);
+			// 	common_triple_cmd(env);
+			// 	command_dispatcher(env, "sb", 1);
 			// }
 			// else if (permB == 5)
 			// {
-			// 	command_dispatcher(a, b, "sa", 1);
-			// 	common_triple_cmd(a, b);
+			// 	command_dispatcher(env, "sa", 1);
+			// 	common_triple_cmd(env);
 			// }
 		}
 
 		if (permA == 5)
 		{
 			if (permB == 1 || permB == 3 || permB == 4)
-				command_dispatcher(a, b, "sb", 1);
+				command_dispatcher(env, "sb", 1);
 			if (permB == 2 || permB == 3 || permB == 4)
-				common_triple_cmd(a, b);
+				common_triple_cmd(env);
 			if (permB == 2 || permB == 3)
-				command_dispatcher(a, b, "sb", 1);
+				command_dispatcher(env, "sb", 1);
 			if (permB == 1 || permB == 0)
-				run_triple_cmd(a, b, 'a');
+				run_triple_cmd(env, 'a');
 
 			// if (permB == 0)
 			// {
-			// 	run_triple_cmd(a, b, 'a');
+			// 	run_triple_cmd(env, 'a');
 			// }
 			// else if (permB == 1)
 			// {
-			// 	command_dispatcher(a, b, "sb", 1);
-			// 	run_triple_cmd(a, b, 'a');
+			// 	command_dispatcher(env, "sb", 1);
+			// 	run_triple_cmd(env, 'a');
 			// }
 			// else if (permB == 2)
 			// {
-			// 	common_triple_cmd(a, b);
-			// 	command_dispatcher(a, b, "sb", 1);
+			// 	common_triple_cmd(env);
+			// 	command_dispatcher(env, "sb", 1);
 			// }
 			// else if (permB == 3)
 			// {
-			// 	command_dispatcher(a, b, "sb", 1);
-			// 	common_triple_cmd(a, b);
-			// 	command_dispatcher(a, b, "sb", 1);
+			// 	command_dispatcher(env, "sb", 1);
+			// 	common_triple_cmd(env);
+			// 	command_dispatcher(env, "sb", 1);
 			// }
 			// else if (permB == 4)
 			// {
-			// 	command_dispatcher(a, b, "sb", 1);
-			// 	common_triple_cmd(a, b);
+			// 	command_dispatcher(env, "sb", 1);
+			// 	common_triple_cmd(env);
 			// }
 		}
 	}
@@ -537,24 +537,24 @@ void		process_perm_cases(t_stack **a, t_stack **b, int permA, int permB)
 	// iter = clist_a;
 	// while (iter && *iter)
 	// {
-	// 	command_dispatcher(a, b, *iter, 1);
+	// 	command_dispatcher(env, *iter, 1);
 	// 	iter++;
 	// }
 	// iter = clist_b;
 	// while (iter && *iter)
 	// {
-	// 	command_dispatcher(a, b, *iter, 1);
+	// 	command_dispatcher(env, *iter, 1);
 	// 	iter++;
 	// }
 }
 
-void		sort_three(t_stack **a, t_stack **b, t_plist *pa, int numb)
+void		sort_three(t_env *env, t_plist *pa, int numb)
 {
 	int		numa;
 	int		permA;
 	int		permB;
 
-	numa = pa ? pa->count : list_size(*a);
+	numa = pa ? pa->count : list_size(*(env->a));
 	numa = (numa > 3) ? 3 : numa;
 
 	// stupid sort
@@ -562,68 +562,68 @@ void		sort_three(t_stack **a, t_stack **b, t_plist *pa, int numb)
 	permB = 0;
 	if (numa == 2)
 	{
-		if ((*a)->val > (*a)->next->val)
+		if ((*(env->a))->val > (*(env->a))->next->val)
 			permA = 1;
 	}
 	else if (numa == 3)
-		permA = get_aperm_case((*a)->val, (*a)->next->val, (*a)->next->next->val);
+		permA = get_aperm_case((*(env->a))->val, (*(env->a))->next->val, (*(env->a))->next->next->val);
 
 	if (numb == 2)
 	{
-		if ((*b)->val < (*b)->next->val)
+		if ((*(env->b))->val < (*(env->b))->next->val)
 			permB = 1;
 	}
 	else if (numb == 3)
-		permB = get_bperm_case((*b)->val, (*b)->next->val, (*b)->next->next->val);
+		permB = get_bperm_case((*(env->b))->val, (*(env->b))->next->val, (*(env->b))->next->next->val);
 	//printf("Permutation caseA: %i. caseB: %i\n.", permA, permB);
 
-	process_perm_cases(a, b, permA, permB);
+	process_perm_cases(env, permA, permB);
 
 	while (numb--)
 	{
 		//printf("Pushed to A: %i\n", (*b)->val);
 		//*cmd_str = ft_dstrjoin(*cmd_str, "pa\n", 1, 0);
-		command_dispatcher(a, b, "pa", 1);
+		command_dispatcher(env, "pa", 1);
 	}
 }
 
-t_plist		*backpush_a(t_stack **a, t_stack **b, t_plist **p_list)
+t_plist		*backpush_a(t_env *env)
 {
 	int		i;
 
-	i = (*p_list)->count;
-	(*p_list)->to = 'A';
+	i = (*(env->p_list))->count;
+	(*(env->p_list))->to = 'A';
 	while (i--)
-		command_dispatcher(a, b, "pa", 1);
+		command_dispatcher(env, "pa", 1);
 	//printf("Pushed back to A: %i\n", (*p_list)->count);
-	return (*p_list);
+	return (*(env->p_list));
 }
 
-t_plist		*backpush_b(t_stack **a, t_stack **b, int piv, t_plist **a_push)
+t_plist		*backpush_b(t_env *env, int piv, t_plist **a_push)
 {
 	int		rot_counter;
 	int		pushed;
 
 	pushed = 0;
 	rot_counter = 0;
-	while (has_lower_piv(*a, piv))
+	while (has_lower_piv(*(env->a), piv))
 	{
-		while ((*a)->val >= piv)
+		while ((*(env->a))->val >= piv)
 		{
-			command_dispatcher(a, b, "ra", 1);
+			command_dispatcher(env, "ra", 1);
 			rot_counter++;
 		}
-		command_dispatcher(a, b, "pb", 1);
+		command_dispatcher(env, "pb", 1);
 		pushed++;
 	}
 	(*a_push)->count -= pushed;
 	while (rot_counter--)
-		command_dispatcher(a, b, "rra", 1);
+		command_dispatcher(env, "rra", 1);
 	//printf("Pushed bakc to B: %i\n", pushed);
 	return (plist_el_create(pushed, 'B'));
 }
 
-void		stacks_sort(t_stack **a, t_stack **b, t_plist **p_list, int *s_arr)
+void		stacks_sort(t_env *env)
 {
 	t_plist	*a_push;	// for the nearest push to A
 	int		piv;
@@ -631,23 +631,23 @@ void		stacks_sort(t_stack **a, t_stack **b, t_plist **p_list, int *s_arr)
 	int		sort_size;
 	int		numb;
 
-	full_size = list_size(*a) + list_size(*b);
-	while ((*p_list))
+	full_size = list_size(*(env->a)) + list_size(*(env->b));
+	while (*(env->p_list))
 	{
-		sort_size = list_size(*a);
-		a_push = backpush_a(a, b, p_list);
+		sort_size = list_size(*(env->a));
+		a_push = backpush_a(env);
 		while (a_push->count > 3)
 		{
-			piv = s_arr[(2 * full_size - sort_size - list_size(*a)) / 2];
+			piv = env->sort[(2 * full_size - sort_size - list_size(*(env->a))) / 2];
 			//printf("The pivot is: %i\n", piv);
-			plist_push(p_list, backpush_b(a, b, piv, &a_push));
+			plist_push(env->p_list, backpush_b(env, piv, &a_push));
 		}
 
-		numb = ((*p_list)->to == 'B') ? (*p_list)->count : 0;
-		sort_three(a, b, a_push, numb);
-		plist_removeifa(p_list);
+		numb = ((*(env->p_list))->to == 'B') ? (*(env->p_list))->count : 0;
+		sort_three(env, a_push, numb);
+		plist_removeifa(env->p_list);
 		if (numb != 0)
-			plist_pop(p_list);				// need to free it ?
+			plist_pop(env->p_list);				// need to free it ?
 		// if (*(p_list)->count <= 3 &&
 		// 	(!(a_push = find_plist_a(*p_list)) || a_push->count <= 3))		// how to find out how many elements you need to sort
 		// {
@@ -666,9 +666,9 @@ void		stacks_sort(t_stack **a, t_stack **b, t_plist **p_list, int *s_arr)
 // 	while ()
 // }
 
-void		stack_main_split(t_stack **a, t_stack **b)
+void		stack_main_split(t_env *env)
 {
-	int		*s_arr;
+	//int		*s_arr;
 	int		stack_len;
 	t_plist *push_list;
 	//int		i;
@@ -678,32 +678,32 @@ void		stack_main_split(t_stack **a, t_stack **b)
 	//t_stack	*iter;
 	//t_plist	*tp_iter;
 	int		numb;
-	char	*cmd_full_str;
+	//char	*cmd_full_str;
 
 	// full cmd string
-	cmd_full_str = ft_strnew(0);
+	//cmd_full_str = ft_strnew(0);
 
 	push_list = NULL;
-	stack_len = list_size(*a);
-	s_arr = list_to_arr_sort(*a);
+	stack_len = list_size(*(env->a));
+	env->sort = list_to_arr_sort(*(env->a));
 
 	pushed_total = 0;
 
 	//printf("Commands for main split:\n");
 
-	while (list_size(*a) > 3)
+	while (list_size(*(env->a)) > 3)
 	{
 		pushed = 0;
-		piv = s_arr[(stack_len + pushed_total) / 2];
+		piv = env->sort[(stack_len + pushed_total) / 2];
 		// printf("Piv is: %i\n", piv);
 		// sleep(1);
-		while (has_lower_piv(*a, piv))
+		while (has_lower_piv(*(env->a), piv))
 		{
-			while ((*a)->val >= piv)
+			while ((*(env->a))->val >= piv)
 			{
-				command_dispatcher(a, b, "ra", 1); //rotate(a);
+				command_dispatcher(env, "ra", 1); //rotate(a);
 			}
-			command_dispatcher(a, b, "pb", 1); //push(b, pop(a));
+			command_dispatcher(env, "pb", 1); //push(b, pop(a));
 			pushed++;
 		}
 		plist_push(&push_list, plist_el_create(pushed, 'B'));
@@ -732,7 +732,7 @@ void		stack_main_split(t_stack **a, t_stack **b)
 	// Sort start
 	numb = push_list->count > 3 ? 0 : push_list->count;
 	//sort_three(a, b, NULL, numb, &cmd_full_str);
-	sort_three(a, b, NULL, numb);
+	sort_three(env, NULL, numb);
 	if (numb != 0)
 		plist_pop(&push_list);			// should use free here probably
 	// tp_iter = push_list;
@@ -749,7 +749,9 @@ void		stack_main_split(t_stack **a, t_stack **b)
 	// fflush(stdout);
 
 	//stacks_sort(a, b, &push_list, s_arr, &cmd_full_str);
-	stacks_sort(a, b, &push_list, s_arr);
+	env->p_list = &push_list;
+
+	stacks_sort(env);
 	
 
 	//printf("%s", cmd_full_str);

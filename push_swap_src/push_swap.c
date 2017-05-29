@@ -23,6 +23,7 @@ int			main(int ac, char **av)
 	int			i;
 	int			flags_count;
 	t_stack		*b;
+	t_env		*env;
 	//char		*command;
 	//int			debug;
 	//intmax_t	val;
@@ -30,6 +31,7 @@ int			main(int ac, char **av)
 
 	//command = NULL;
 	a = NULL;
+	env = NULL;
 	flags_count = ps_flag_parse(ac, av);
 	b = NULL;
 	i = ac - flags_count;
@@ -53,8 +55,9 @@ int			main(int ac, char **av)
 		// if (a == NULL && b == NULL)					// set for UBUNTU
 		// 	error_call("Memalloc error.");
 		a = init_stack(i - 1, av + flags_count + 1);
+		env = init_env(&a, &b);
 		
-		stack_main_split(&a, &b);
+		stack_main_split(env);
 		//list_to_arr_sort(a);
 		// fflush(stdout);
 

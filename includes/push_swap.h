@@ -31,20 +31,20 @@ typedef struct		s_stack
 	struct s_stack	*next;
 }					t_stack;
 
-typedef struct 		s_env
-{
-	t_stack			*a;
-	t_stack			*b;
-	// size_t			a_len;
-	// size_t			b_len;
-}					t_env;
-
 typedef struct		s_plist
 {
 	int				count;
 	char			to;
 	struct s_plist	*next;
 }					t_plist;
+
+typedef struct 		s_env
+{
+	t_stack			**a;
+	t_stack			**b;
+	t_plist			**p_list;
+	int				*sort;
+}					t_env;
 
 int 				srt_asc(int a, int b);
 
@@ -56,8 +56,9 @@ t_stack				*pop(t_stack **s_top);
 void				swap(t_stack **s_top);
 void				rotate(t_stack **s_top);
 void				rrotate(t_stack **s_top);
-void				command_dispatcher(t_stack **a, t_stack **b, char *cmd, int announce);
+void				command_dispatcher(t_env *env, char *cmd, int announce);
 t_stack				*init_stack(int n_arg, char **av);
+t_env				*init_env(t_stack **a, t_stack **b);
 int					ps_flag_parse(int ac, char **av);
 int					list_size(t_stack *stack);
 
@@ -65,6 +66,6 @@ int					*list_to_arr_sort(t_stack *list);
 
 void				debug_info(t_stack const *a, t_stack const *b, char *cmd);
 
-void				stack_main_split(t_stack **a, t_stack **b);
+void				stack_main_split(t_env *env);
 
 #endif

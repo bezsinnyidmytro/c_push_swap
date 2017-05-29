@@ -37,6 +37,7 @@ int				main(int ac, char **av)
 	char		*command;
 	int			debug;
 	int			flags_count;
+	t_env		*env;
 	//char		**arg_s;
 
 	command = NULL;
@@ -56,7 +57,7 @@ int				main(int ac, char **av)
 		// }
 		//else
 		a = init_stack(i - 1, av + flags_count + 1);
-
+		env = init_env(&a, &b);
 		// if (ft_strcmp(av[1], "-d") == 0 && (debug = 1))		// need to modify in case when ac == 2
 		// 	arg_bound++;
 		
@@ -88,16 +89,16 @@ int				main(int ac, char **av)
 		// Read commnd on standard input and process it
 		while ((get_next_line(0, &command)))
 		{
-			command_dispatcher(&a, &b, command, 0);
+			command_dispatcher(env, command, 0);
 			if (debug)
-				debug_info(a, b, command);
+				debug_info(*(env->a), *(env->b), command);
 		}
 
 		// Push elements from A to B
 		// while ((pop_el = pop(&a)) != NULL)
 		// 	push(&b, pop_el);
 		
-		if (is_sorted(a, &srt_asc) && !b)
+		if (is_sorted(*(env->a), &srt_asc) && !(*(env->b)))
 			printf("%sOK\n", KGRN);
 		else
 			printf("%sKO\n", KRED);

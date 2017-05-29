@@ -117,8 +117,15 @@ t_stack			*s_el_create(int val)
 	return (el);
 }
 
-void			command_dispatcher(t_stack **a, t_stack **b, char *cmd, int announce)
+//void			command_dispatcher(t_stack **a, t_stack **b, char *cmd, int announce)
+void			command_dispatcher(t_env *env, char *cmd, int announce)
 {
+	t_stack		**a;
+	t_stack		**b;
+
+	a = env->a;
+	b = env->b;
+
 	if (announce)
 		printf("%s\n", cmd);
 	if (ft_strcmp(cmd, "pa") == 0)
@@ -202,4 +209,16 @@ t_stack			*init_stack(int n_arg, char **av)
 		error_call("Memalloc error. Or empty argument list.");
 	//list_to_arr_sort(a);
 	return (a);
+}
+
+t_env			*init_env(t_stack **a, t_stack **b)
+{
+	t_env		*env;
+
+	env = (t_env *)malloc(sizeof(t_env));
+	env->a = a;
+	env->b = b;
+	env->sort = NULL;
+	env->p_list = NULL;
+	return (env);
 }
