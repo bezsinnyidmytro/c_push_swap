@@ -169,6 +169,15 @@ void			command_dispatcher(t_env *env, char *cmd, int announce)
 	}
 }
 
+void			str_arr_free(char **arr)
+{
+	while (*arr)
+	{
+		free(*arr);
+		arr++;
+	}
+}
+
 t_stack			*init_stack(int n_arg, char **av)
 {
 	// Emty string "" is parsed as 0 - need to trim and check if the string is not emty
@@ -207,6 +216,11 @@ t_stack			*init_stack(int n_arg, char **av)
 	}
 	if (a == NULL)					// set for UBUNTU
 		error_call("Memalloc error. Or empty argument list.");
+	if (n_arg == 1)
+	{
+		str_arr_free(str_args);
+		free(str_args);
+	}
 	//list_to_arr_sort(a);
 	return (a);
 }

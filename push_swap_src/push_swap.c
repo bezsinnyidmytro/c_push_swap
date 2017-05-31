@@ -14,6 +14,7 @@
 
 // CHECK FOR STACK A BEING SORTED AS IT IS at the start of the program
 // CHECK FOR EMPTY STRING ARGUMENT
+// CHECK FOR LENGTH AND USE ANOTHER SORT IF LESS THAN 6
 
 void		reserv()
 {
@@ -61,6 +62,7 @@ int			main(int ac, char **av)
 		env = init_env(&a, &b);
 		
 		stack_main_split(env);
+
 		//list_to_arr_sort(a);
 		// fflush(stdout);
 
@@ -77,6 +79,6 @@ int			main(int ac, char **av)
 		// else
 		// 	printf("%sKO\n", KRED);
 	}
-
+	//while (1);
 	return (1);
 }

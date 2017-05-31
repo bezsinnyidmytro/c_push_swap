@@ -25,13 +25,6 @@ char	*ft_dstrjoin(char *s1, char *s2, int ff1, int ff2)
 	return (str_new);
 }
 
-// void	command_dispatcher2(t_stack **a, t_stack **b, char *cmd, int announce, char **cmd_full_str)
-// {
-// 	command_dispatcher(env, cmd, announce);
-// 	cmd = ft_dstrjoin(cmd, "\n", 0, 0);																						// huge troubles with free
-// 	*cmd_full_str = ft_dstrjoin(*cmd_full_str, cmd, 0, 0);
-// }
-
 t_plist		*plist_el_create(int val, char to)
 {
 	t_plist	*el;
@@ -56,27 +49,33 @@ void		plist_push(t_plist **s_top, t_plist *s_el)
 	}
 }
 
-t_plist		*plist_pop(t_plist **s_top)
+void		plist_pop_free(t_plist **s_top)
 {
-	t_plist	*res;
+	t_plist	*to_free;
 
-	res = NULL;
+	to_free = NULL;
 	if (*s_top)
 	{
-		res = *s_top;
+		to_free = *s_top;
 		*s_top = (*s_top)->next;
 	}
-	return (res);
+	to_free->next = NULL;
+	free(to_free);
 }
 
 void		plist_removeifa(t_plist **s_top)
 {
-	//t_plist	*prev;
+	t_plist	*to_free;
 
 	if ((*s_top)->next)
 		plist_removeifa(&((*s_top)->next));
 	if ((*s_top)->to == 'A')
+	{
+		to_free = (*s_top);
 		(*s_top) = (*s_top)->next;
+		to_free->next = NULL;
+		free(to_free);
+	}
 }
 
 int			has_lower_piv(t_stack *a, int piv)
@@ -217,51 +216,31 @@ void		common_triple_cmd(t_env *env)
 	command_dispatcher(env, "rrr", 1);
 }
 
-void		run_triple_cmd(t_env *env, char stack)
+//void		run_triple_cmd(t_env *env, char stack, int mask)
+void		run_triple_cmd(t_env *env, char stack, int mask)
 {
 	if (stack == 'a')
 	{
-		command_dispatcher(env, "ra", 1);
-		command_dispatcher(env, "sa", 1);
-		command_dispatcher(env, "rra", 1);
+		if ((mask & 1) == 1)
+			command_dispatcher(env, "ra", 1);
+		if ((mask & 2) == 2)
+			command_dispatcher(env, "sa", 1);
+		if ((mask & 4) == 4)
+			command_dispatcher(env, "rra", 1);
 	}
 	else if (stack == 'b')
 	{
-		command_dispatcher(env, "rb", 1);
-		command_dispatcher(env, "sb", 1);
-		command_dispatcher(env, "rrb", 1);
+		if ((mask & 1) == 1)
+			command_dispatcher(env, "rb", 1);
+		if ((mask & 2) == 2)
+			command_dispatcher(env, "sb", 1);
+		if ((mask & 4) == 4)
+			command_dispatcher(env, "rrb", 1);
 	}
 }
 
 void		process_perm_cases(t_env *env, int permA, int permB)
 {
-	// t_stack		*a_iter;
-	// t_stack		*b_iter;
-	// int			i;
-
-	// printf("Permutation A: %i, B: %i\n", permA, permB);
-	// i = 0;
-	// a_iter = *a;
-	// b_iter = *b;
-
-	// printf("Stack A:\n");
-	// while (i < 3 && a_iter)
-	// {
-	// 	printf("%5i", a_iter->val);
-	// 	a_iter = a_iter->next;
-	// }	
-
-	// i = 0;
-	// printf("\n\nStack B:\n");
-	// while (i < 3 && b_iter)
-	// {
-	// 	printf("%5i", b_iter->val);
-	// 	b_iter = b_iter->next;
-	// }
-	// printf("\n");
-
-
-
 	if (permA == permB && permB == 0)
 		return ;
 
@@ -282,7 +261,6 @@ void		process_perm_cases(t_env *env, int permA, int permB)
 		}
 		else if (permA == 4)
 		{
-			//printf("This is perm 4-4\n");
 			command_dispatcher(env, "ss", 1);
 			common_triple_cmd(env);
 		}
@@ -296,69 +274,29 @@ void		process_perm_cases(t_env *env, int permA, int permB)
 			if (permB == 1 || permB == 3 || permB == 4)
 				command_dispatcher(env, "sb", 1);
 			if (permB > 1)
-				run_triple_cmd(env, 'b');
+				run_triple_cmd(env, 'b', 7);
 			if (permB == 2 || permB == 3)
 				command_dispatcher(env, "sb", 1);
-
-
-			// if (permB == 1)
-			// 	command_dispatcher(env, "sb", 1);
-			// else if (permB == 2)
-			// {
-			// 	run_triple_cmd(env, 'b');
-			// 	command_dispatcher(env, "sb", 1);
-			// }
-			// else if (permB == 3)
-			// {
-			// 	command_dispatcher(env, "sb", 1);
-			// 	run_triple_cmd(env, 'b');
-			// 	command_dispatcher(env, "sb", 1);
-			// }
-			// else if (permB == 4)
-			// {
-			// 	command_dispatcher(env, "sb", 1);
-			// 	run_triple_cmd(env, 'b');
-			// }
-			// else if (permB == 5)
-			// 	run_triple_cmd(env, 'b');
 		}
 
-		if (permA == 1)					// no common for 1-5
+		if (permA == 1)
 		{
 			if (permB == 3 || permB == 4)
 				command_dispatcher(env, "ss", 1);
-			if (permB == 2 || permB == 3 || permB == 4 || permB == 5)
-				run_triple_cmd(env, 'b');
+			if (permB == 2 || permB == 3 || permB == 4)
+				run_triple_cmd(env, 'b', 7);
 			if (permB == 2)
 				command_dispatcher(env, "ss", 1);
 			if (permB == 3)
 				command_dispatcher(env, "sb", 1);
-			if (permB == 5 || permB == 0)
+			if (permB == 0)
 				command_dispatcher(env, "sa", 1);
-
-			// if (permB == 0)
-			// 	command_dispatcher(env, "sa", 1);
-			// else if (permB == 2)
-			// {
-			// 	run_triple_cmd(env, 'b');
-			// 	command_dispatcher(env, "ss", 1);
-			// }
-			// else if (permB == 3)
-			// {
-			// 	command_dispatcher(env, "ss", 1);
-			// 	run_triple_cmd(env, 'b');
-			// 	command_dispatcher(env, "sb", 1);
-			// }
-			// else if (permB == 4)
-			// {
-			// 	command_dispatcher(env, "ss", 1);
-			// 	run_triple_cmd(env, 'b');
-			// }
-			// else if (permB == 5)
-			// {
-			// 	run_triple_cmd(env, 'b');
-			// 	command_dispatcher(env, "sa", 1);
-			// }
+			if (permB == 5)
+			{
+				command_dispatcher(env, "rb", 1);
+				command_dispatcher(env, "ss", 1);
+				command_dispatcher(env, "rrb", 1);
+			}
 		}
 
 		if (permA == 2)
@@ -370,39 +308,11 @@ void		process_perm_cases(t_env *env, int permA, int permB)
 			if (permB == 3)
 				command_dispatcher(env, "ss", 1);
 			if (permB == 1 || permB == 0)
-				run_triple_cmd(env, 'a');
+				run_triple_cmd(env, 'a', 7);
 			if (permB == 1)
 				command_dispatcher(env, "ss", 1);
 			if (permB == 5 || permB == 4 || permB == 0)
 				command_dispatcher(env, "sa", 1);
-
-			// if (permB == 0)
-			// {
-			// 	run_triple_cmd(env, 'a');
-			// 	command_dispatcher(env, "sa", 1);
-			// }
-			// else if (permB == 1)
-			// {
-			// 	run_triple_cmd(env, 'a');
-			// 	command_dispatcher(env, "ss", 1);
-			// }
-			// else if (permB == 3)
-			// {
-			// 	command_dispatcher(env, "sb", 1);
-			// 	common_triple_cmd(env);
-			// 	command_dispatcher(env, "ss", 1);
-			// }
-			// else if (permB == 4)
-			// {
-			// 	command_dispatcher(env, "sb", 1);
-			// 	common_triple_cmd(env);
-			// 	command_dispatcher(env, "sa", 1);
-			// }
-			// else if (permB == 5)
-			// {
-			// 	common_triple_cmd(env);
-			// 	command_dispatcher(env, "sa", 1);
-			// }
 		}
 
 		if (permA == 3)
@@ -416,40 +326,9 @@ void		process_perm_cases(t_env *env, int permA, int permB)
 			if (permB == 2)
 				command_dispatcher(env, "ss", 1);
 			if (permB == 1 || permB == 0)
-				run_triple_cmd(env, 'a');
+				run_triple_cmd(env, 'a', 7);
 			if (permB != 2)
 				command_dispatcher(env, "sa", 1);
-
-			// if (permB == 0)
-			// {
-			// 	command_dispatcher(env, "sa", 1);
-			// 	run_triple_cmd(env, 'a');
-			// 	command_dispatcher(env, "sa", 1);
-			// }
-			// else if (permB == 1)
-			// {
-			// 	command_dispatcher(env, "ss", 1);
-			// 	run_triple_cmd(env, 'a');
-			// 	command_dispatcher(env, "sa", 1);
-			// }
-			// else if (permB == 2)
-			// {
-			// 	command_dispatcher(env, "sa", 1);
-			// 	common_triple_cmd(env);
-			// 	command_dispatcher(env, "ss", 1);
-			// }
-			// else if (permB == 4)
-			// {
-			// 	command_dispatcher(env, "ss", 1);
-			// 	common_triple_cmd(env);
-			// 	command_dispatcher(env, "sa", 1);
-			// }
-			// else if (permB == 5)
-			// {
-			// 	command_dispatcher(env, "sa", 1);
-			// 	common_triple_cmd(env);
-			// 	command_dispatcher(env, "sa", 1);
-			// }
 		}
 
 		if (permA == 4)
@@ -463,102 +342,27 @@ void		process_perm_cases(t_env *env, int permA, int permB)
 			if (permB == 2 || permB == 3)
 				command_dispatcher(env, "sb", 1);
 			if (permB == 1 || permB == 0)
-				run_triple_cmd(env, 'a');
-
-			// if (permB == 0)
-			// {
-			// 	command_dispatcher(env, "sa", 1);
-			// 	run_triple_cmd(env, 'a');
-			// }
-			// else if (permB == 1)
-			// {
-			// 	command_dispatcher(env, "ss", 1);
-			// 	run_triple_cmd(env, 'a');
-			// }
-			// else if (permB == 2)
-			// {
-			// 	command_dispatcher(env, "sa", 1);
-			// 	common_triple_cmd(env);
-			// 	command_dispatcher(env, "sb", 1);
-			// }
-			// else if (permB == 3)
-			// {
-			// 	command_dispatcher(env, "ss", 1);
-			// 	common_triple_cmd(env);
-			// 	command_dispatcher(env, "sb", 1);
-			// }
-			// else if (permB == 5)
-			// {
-			// 	command_dispatcher(env, "sa", 1);
-			// 	common_triple_cmd(env);
-			// }
+				run_triple_cmd(env, 'a', 7);
 		}
 
 		if (permA == 5)
 		{
-			if (permB == 1 || permB == 3 || permB == 4)
+			if (permB == 3 || permB == 4)
 				command_dispatcher(env, "sb", 1);
 			if (permB == 2 || permB == 3 || permB == 4)
 				common_triple_cmd(env);
 			if (permB == 2 || permB == 3)
 				command_dispatcher(env, "sb", 1);
-			if (permB == 1 || permB == 0)
-				run_triple_cmd(env, 'a');
-
-			// if (permB == 0)
-			// {
-			// 	run_triple_cmd(env, 'a');
-			// }
-			// else if (permB == 1)
-			// {
-			// 	command_dispatcher(env, "sb", 1);
-			// 	run_triple_cmd(env, 'a');
-			// }
-			// else if (permB == 2)
-			// {
-			// 	common_triple_cmd(env);
-			// 	command_dispatcher(env, "sb", 1);
-			// }
-			// else if (permB == 3)
-			// {
-			// 	command_dispatcher(env, "sb", 1);
-			// 	common_triple_cmd(env);
-			// 	command_dispatcher(env, "sb", 1);
-			// }
-			// else if (permB == 4)
-			// {
-			// 	command_dispatcher(env, "sb", 1);
-			// 	common_triple_cmd(env);
-			// }
+			if (permB == 0)
+				run_triple_cmd(env, 'a', 7);
+			if (permB == 1)
+			{
+				command_dispatcher(env, "ra", 1);
+				command_dispatcher(env, "ss", 1);
+				command_dispatcher(env, "rra", 1);
+			}
 		}
 	}
-
-
-	// char	**clist_a;
-	// char	**clist_b;
-	// //char	**iter_a;
-	// //char	**iter_b;
-	// char	**iter;
-
-	// clist_a = get_clist(permA, 'a');
-	// clist_b = get_clist(permB, 'b');
-
-	// //iter_a = clist_a;
-	// //iter_b = clist_b;
-
-	
-	// iter = clist_a;
-	// while (iter && *iter)
-	// {
-	// 	command_dispatcher(env, *iter, 1);
-	// 	iter++;
-	// }
-	// iter = clist_b;
-	// while (iter && *iter)
-	// {
-	// 	command_dispatcher(env, *iter, 1);
-	// 	iter++;
-	// }
 }
 
 void		sort_three(t_env *env, t_plist *pa, int numb)
@@ -566,15 +370,12 @@ void		sort_three(t_env *env, t_plist *pa, int numb)
 	int		numa;
 	int		permA;
 	int		permB;
-	//t_stack	*iter;
-	//int		i;
 
 	//printf("Sort three\n");
 
 	numa = pa ? pa->count : list_size(*(env->a));
 	numa = (numa > 3) ? 3 : numa;
 
-	// stupid sort
 	permA = 0;
 	permB = 0;
 	if (numa == 2)
@@ -592,50 +393,12 @@ void		sort_three(t_env *env, t_plist *pa, int numb)
 	}
 	else if (numb == 3)
 		permB = get_bperm_case((*(env->b))->val, (*(env->b))->next->val, (*(env->b))->next->next->val);
-	
-	// printf("Permutation caseA: %i. caseB: %i\n.", permA, permB);
-	// printf("NumA: %i, NumB: %i\n", numa, numb);
-	// iter = *(env->a);
-	// i = -1;
-	// printf("Stack A:\n");
-	// while (++i < 3 && iter)
-	// {
-	// 	printf("%5i", iter->val);
-	// 	iter = iter->next;
-	// }
-	// iter = *(env->b);
-	// i = -1;
-	// printf("\n\nStack B:\n");
-	// while (++i < 3 && iter)
-	// {
-	// 	printf("%5i", iter->val);
-	// 	iter = iter->next;
-	// }
-	// printf("\n\n");
 
 	process_perm_cases(env, permA, permB);
 
 	while (numb--)
-	{
-		//printf("Pushed to A: %i\n", (*b)->val);
-		//*cmd_str = ft_dstrjoin(*cmd_str, "pa\n", 1, 0);
 		command_dispatcher(env, "pa", 1);
-	}
-
-	//printf("End of Sort-three\n");
 }
-
-// t_plist		*backpush_a(t_env *env)
-// {
-// 	int		i;
-
-// 	i = (*(env->p_list))->count;
-// 	(*(env->p_list))->to = 'A';
-// 	while (i--)
-// 		command_dispatcher(env, "pa", 1);
-// 	//printf("Pushed back to A: %i\n", (*p_list)->count);
-// 	return (*(env->p_list));
-// }
 
 // for rot_or_rrot
 int			ord_l(int el, int piv)
@@ -648,14 +411,12 @@ int			ord_h(int el, int piv)
 	return (el >= piv);
 }
 
-// int			rot_or_rrot(t_stack *stack, int piv, int (*ord)(), int (*has)())
 int			rot_or_rrot(t_stack *stack, int piv, int (*ord)(), int (*has)())
 {
 	// Predefined that stack has at least one value to push
 	int		first;
 	int		last;
 	int		stack_size;
-	//int		i;
 
 	// debug_info(stack, NULL, "test");
 	// printf("Pivot is: %i\n", piv);
@@ -677,80 +438,19 @@ int			rot_or_rrot(t_stack *stack, int piv, int (*ord)(), int (*has)())
 		stack = stack->next;
 	}
 	if (first > stack_size / 2 && last > stack_size / 2)
-	{
-		//printf("RR\n");
 		return (0);
-	}
-	//printf("R\n");
 	return (1);
-	//return ((first < stack_size / 2) ? 1 : 0);
 }
-
-//t_plist		*backpush_a(t_env *env, int piv, int *rot_cb)
-// t_plist		*backpush_a(t_env *env, int piv)
-// {
-// 	//int		i;
-// 	//int		piv;
-// 	int		pushed;
-// 	int		rot_counter;
-// 	//int		r_or_rr;
-
-// 	printf("Backpush A:\n");
-// 	printf("The plist->count: %i\n", (*(env->p_list))->count);
-
-// 	printf("The piv is: %i\n", piv);
-// 	debug_info(*(env->a), *(env->b), "test");
-
-// 	//i = (*(env->p_list))->count;
-// 	//(*(env->p_list))->to = 'A';
-	
-// 	pushed = 0;
-// 	rot_counter = 0;
-// 	//printf("Stack here\n");
-// 	//piv = env->sort[(2 * full_size - 2 * list_size(*(env->a)) - (*(env->p_list))->count) / 2];
-	
-// 	while (has_higher_piv(*(env->b), piv))
-// 	{
-// 		while ((*(env->b))->val < piv)
-// 		{
-// 			//if ((*(env->b))->next->val >= piv)
-// 			//	command_dispatcher(env, "sb", 1);
-// 			//else
-// 			//{
-// 				command_dispatcher(env, "rb", 1);
-// 				rot_counter++;
-// 			//}
-// 		}
-// 		command_dispatcher(env, "pa", 1);
-// 		pushed++;
-// 		//command_dispatcher(env, "pa", 1);
-// 	}
-// 	(*(env->p_list))->count -= pushed;
-// 	//printf("Rot counter B: %i\n", rot_counter);
-
-// 	printf("The pushed: %i\n", pushed);
-// 	printf("The new plist->count %i\n", (*(env->p_list))->count);
-
-// 	while (rot_counter--)									// if not restored before three_sort cause +200 operations
-// 		command_dispatcher(env, "rrb", 1);
-
-// 	//printf("Pushed back to A: %i\n", (*p_list)->count);
-// 	plist_push(env->p_list, plist_el_create(pushed, 'A'));
-// 	return (*(env->p_list));
-// }
 
 t_plist		*backpush_a(t_env *env, int piv)
 {
 	int		pushed;
 	int		i;
 	int		plist_len;
-	//int		rot_counter;
-	//int		is_rotated;
 
 	pushed = 0;
 	i = 0;
-	//rot_counter = 0;
-	plist_len = (*(env->p_list))->count;			// dont sure which element is at the top of plist at the moment!!!!!!!
+	plist_len = (*(env->p_list))->count;
 	if ((*(env->p_list))->b_is_rot == 1)
 		plist_len += (plist_len + 1) / 2;
 
@@ -782,7 +482,7 @@ t_plist		*backpush_a(t_env *env, int piv)
 				if (!((*(env->p_list))->b_is_rot))
 					command_dispatcher(env, "rb", 1);
 				else
-					command_dispatcher(env, "rrb", 1);					// rotate too much for is_rot
+					command_dispatcher(env, "rrb", 1);
 				i++;
 			}
 		}
@@ -810,96 +510,18 @@ t_plist		*backpush_a(t_env *env, int piv)
 		}
 	}
 
-	//printf("Rot counter B: %i\n", rot_counter);
-	
-	// while (rot_counter--)									// if not restored before three_sort cause +200 operations
-	// 	command_dispatcher(env, "rrb", 1);
-
-	//printf("Pushed back to A: %i\n", (*p_list)->count);
 	plist_push(env->p_list, plist_el_create(pushed, 'A'));
 	return (*(env->p_list));
 }
 
-int			stack_find_maxbound(t_env *env, int count)
-{
-	int		max_bound;
-	int		unsort_size;
-	//int		full_size;
-
-	unsort_size = list_size(*(env->b));
-	//full_size = list_size(*(env->a)) + list_size(*(env->b));
-	max_bound = env->sort[unsort_size - count];
-	return (max_bound);
-}
-
-t_plist		*backpush_a_max(t_env *env)
-{
-	//int		i;
-	//int		piv;
-	//int		pushed;
-	int		rot_counter;
-	int		to_push;
-	int		max_bound;
-	//int		r_or_rr;
-
-	//printf("Backpush A:\n");
-
-	//i = (*(env->p_list))->count;
-	//(*(env->p_list))->to = 'A';
-	
-	to_push = ((*(env->p_list))->count / 2) > 6 ? 6 : ((*(env->p_list))->count + 1) / 2;
-
-	//pushed = 0;
-	rot_counter = 0;
-	//printf("Stack here\n");
-	//piv = env->sort[(2 * full_size - 2 * list_size(*(env->a)) - (*(env->p_list))->count) / 2];
-	max_bound = stack_find_maxbound(env, to_push);
-
-
-	// printf("The max bound to find is : %i.\n Need to push: %i.\n Last bpush->count: %i\n", max_bound, to_push, (*(env->p_list))->count);
-	// debug_info(*(env->a), *(env->b), "test");
-
-
-	while (has_higher_piv(*(env->b), max_bound))
-	{
-		while ((*(env->b))->val < max_bound)
-		{
-			//if ((*(env->b))->val < piv && (*(env->b))->next->val >= piv)
-			//	command_dispatcher(env, "sb", 1);
-			//else
-			//{
-				command_dispatcher(env, "rb", 1);
-				rot_counter++;
-			//}
-		}
-		command_dispatcher(env, "pa", 1);
-		//pushed++;
-		//command_dispatcher(env, "pa", 1);
-	}
-	(*(env->p_list))->count -= to_push;
-	//printf("Rot counter B: %i\n", rot_counter);
-
-	while (rot_counter--)									// if not restored before three_sort cause +200 operations
-		command_dispatcher(env, "rrb", 1);
-
-	//printf("Pushed back to A: %i\n", (*p_list)->count);
-	plist_push(env->p_list, plist_el_create(to_push, 'A'));
-	return (*(env->p_list));
-}
-
-// FOR 100
 t_plist		*backpush_b(t_env *env, int piv, t_plist **a_push, int *rot_ca)
 {
-	//int		rot_counter;
 	int		pushed;
 	int		r_or_rr;
 
-	// if (*rot_ca)
-	// 	printf("\n");
 	//printf("Backpush B:\n");
 
 	pushed = 0;
-	//rot_counter = 0;
 	while (has_lower_piv(*(env->a), piv))
 	{
 
@@ -907,8 +529,6 @@ t_plist		*backpush_b(t_env *env, int piv, t_plist **a_push, int *rot_ca)
 		
 		while ((*(env->a))->val >= piv)
 		{
-			//if ((*(env->a))->val >= piv && (*(env->a))->next->val < piv)
-			//	command_dispatcher(env, "sa", 1);
 			if (r_or_rr)
 			{
 				command_dispatcher(env, "ra", 1);
@@ -924,11 +544,6 @@ t_plist		*backpush_b(t_env *env, int piv, t_plist **a_push, int *rot_ca)
 		pushed++;
 	}
 	(*a_push)->count -= pushed;
-	
-	//while (rot_counter--)								// need to return stack to primal state only before three_sort
-	//	command_dispatcher(env, "rra", 1);
-	
-	//printf("Pushed bakc to B: %i\n", pushed);
 	return (plist_el_create(pushed, 'B'));
 }
 
@@ -970,77 +585,36 @@ void		stacks_sort(t_env *env)
 		sort_size = list_size(*(env->a));
 		
 		piv2 = env->sort[(2 * full_size - 2 * sort_size - (*(env->p_list))->count) / 2];
-		// if ((*(env->p_list))->to == 'B' && (*(env->p_list))->count > 3)
-		// 	a_push = backpush_a(env, piv2);
 
 		if ((*(env->p_list))->to == 'B' && (*(env->p_list))->count > 3)			// probably can delete if-part->to == 'B'
-		{
 			a_push = backpush_a(env, piv2);
-			// a_push = backpush_a_max(env);
-		}
-		
-		//printf("Hello where is the backpushA-element?\n");
-		//printf("BackpushA->count: %i\n", a_push->count);
 
 		while (a_push && a_push->count > 3)
 		{
 			piv = env->sort[(2 * full_size - sort_size - list_size(*(env->a))) / 2];
-			// printf("Mark before\n");
-			//printf("The pivot is: %i\n", piv);
-
-			// FOR 100
 			plist_push(env->p_list, backpush_b(env, piv, &a_push, &rot_ca));
 		}
 
-		//numb = ((*(env->p_list))->to == 'B') ? (*(env->p_list))->count : 0;
 		numb = ((*(env->p_list))->to == 'B') ? (*(env->p_list))->count : (*(env->p_list))->next->count;
-		//if ((*(env->p_list))->to == 'A')
-		//	printf("Hello it was A :)\n");
 
-		// for 100
 		restore_a(env, &rot_ca);
 
-
 		sort_three(env, a_push, numb);
-		//printf("On Remove Plist\n");
 		plist_removeifa(env->p_list);
 		if (numb != 0)
-			plist_pop(env->p_list);				// need to free it ?
-		// if (*(p_list)->count <= 3 &&
-		// 	(!(a_push = find_plist_a(*p_list)) || a_push->count <= 3))		// how to find out how many elements you need to sort
-		// {
-		// 	sort_three(a, b, a_push, p_list->count);
-		// }
-
+			plist_pop_free(env->p_list);				// need to free it ?
 	}
 }
 
-// void		cmd_str_opt(char **cmd_full_str)
-// {
-// 	char	*iter;
-// 	char
-
-// 	iter = *cmd_full_str;
-// 	while ()
-// }
-
 void		stack_main_split(t_env *env)
 {
-	//int		*s_arr;
 	int		stack_len;
 	t_plist *push_list;
-	//int		i;
 	int		piv;
 	int		pushed_total;
 	int		pushed;
-	//t_stack	*iter;
-	//t_plist	*tp_iter;
 	int		numb;
-	int		path;
-	//char	*cmd_full_str;
-
-	// full cmd string
-	//cmd_full_str = ft_strnew(0);
+	//int		path;
 
 	push_list = NULL;
 	stack_len = list_size(*(env->a));
@@ -1054,46 +628,23 @@ void		stack_main_split(t_env *env)
 	{
 		pushed = 0;
 		piv = env->sort[(stack_len + pushed_total) / 2];
-		// printf("Piv is: %i\n", piv);
-		// sleep(1);
-
-		// if (has_lower_piv(*(env->a), piv))
-		// 	rot_or_rrot(*(env->a), piv, &ord_l, &has_lower_piv);
-		path = rot_or_rrot(*(env->a), piv, &ord_l, &has_lower_piv);
 
 		while (has_lower_piv(*(env->a), piv))
 		{	
 			while ((*(env->a))->val >= piv)
 			{
 				// Was only ra and it seems that it was better on 3-4 commands
-				if (path)
-					command_dispatcher(env, "ra", 1); //rotate(a);
-				else
-					command_dispatcher(env, "rra", 1);
+				//if (path)
+					command_dispatcher(env, "ra", 1);
+				//else
+				//	command_dispatcher(env, "rra", 1);
 			}
-			command_dispatcher(env, "pb", 1); //push(b, pop(a));
+			command_dispatcher(env, "pb", 1);
 			pushed++;
 		}
 		plist_push(&push_list, plist_el_create(pushed, 'B'));
 		pushed_total += pushed;
 	}
-	// i = -1;
-	// while (++i < stack_len)
-	// 	printf("%*i", ft_nbrlen(s_arr[i]) + 3, s_arr[i]);
-	// printf("\n");
-	// if (!(*b))
-	// 	printf("Stack B is empty.\n");
-
-
-	// printf("Stacks after push operations\n");
-	// debug_info(*a, *b, NULL);
-	// tp_iter = push_list;
-	// printf("Push list after push operations:\n");
-	// while (tp_iter)
-	// {
-	// 	printf("Pushed: %i, to %c.\n", tp_iter->count, tp_iter->to);
-	// 	tp_iter = tp_iter->next;
-	// }
 
 	//printf("Commands for stack-sort:\n");
 
@@ -1102,45 +653,11 @@ void		stack_main_split(t_env *env)
 	//sort_three(a, b, NULL, numb, &cmd_full_str);
 	sort_three(env, NULL, numb);
 	if (numb != 0)
-		plist_pop(&push_list);			// should use free here probably
-	// tp_iter = push_list;
-	// printf("Push list after first sort:\n");
-	// while (tp_iter)
-	// {
-	// 	printf("Pushed: %i, to %c.\n", tp_iter->count, tp_iter->to);
-	// 	tp_iter = tp_iter->next;
-	// }
+	{
+		plist_pop_free(&push_list);			// should use free here probably
+	}
 
-	// // After sort or something that looks like sort :)
-	// printf("Stacks after first sort operations\n");
-	// debug_info(*a, *b, NULL);
-	// fflush(stdout);
-
-	//stacks_sort(a, b, &push_list, s_arr, &cmd_full_str);
 	env->p_list = &push_list;
 
 	stacks_sort(env);
-	
-
-	//printf("%s", cmd_full_str);
-	// sort_three(a, b, NULL, push_list->count);		// should be called from stacks_sort()
-	// plist_pop(&push_list);							// need to free and use only with IF
-	// sort_three(a, b, NULL, push_list->count);
-	// plist_pop(&push_list);							// need to free and use only with IF
-
-	// After sort or something that looks like sort :)
-	// printf("Stacks after sort operations\n");
-	// debug_info(*a, *b, NULL);
-
-	// // Test last pivot
-	// piv = s_arr[(2 * stack_len - 2 * list_size(*a) - push_list->count) / 2];
-	// //piv = (2 * stack_len - 2 * list_size(*a) - push_list->count) / 2;
-	// printf("\n\nThe last pivot is: %i.\n", piv);
-
-	// printf("Push list:\n");
-	// while (push_list)
-	// {
-	// 	printf("Pushed: %i, to %c.\n", push_list->count, push_list->to);
-	// 	push_list = push_list->next;
-	// }	
 }

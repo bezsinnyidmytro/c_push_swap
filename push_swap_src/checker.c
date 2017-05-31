@@ -92,6 +92,7 @@ int				main(int ac, char **av)
 			command_dispatcher(env, command, 0);
 			if (debug)
 				debug_info(*(env->a), *(env->b), command);
+			free(command);
 		}
 
 		// Push elements from A to B
@@ -123,7 +124,7 @@ int				main(int ac, char **av)
 		// 	printf("\n");
 		// }
 	}
-
+	//while (1);
 	return (1);
 }
 
