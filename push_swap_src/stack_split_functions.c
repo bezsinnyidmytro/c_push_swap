@@ -39,6 +39,7 @@ t_plist		*plist_el_create(int val, char to)
 	el = (t_plist *)malloc(sizeof(t_plist));
 	el->count = val;
 	el->to = to;
+	el->b_is_rot = 0;
 	el->next = NULL;
 	return (el);
 }
@@ -731,6 +732,93 @@ t_plist		*backpush_a(t_env *env, int piv)
 	return (*(env->p_list));
 }
 
+// t_plist		*backpush_a(t_env *env, int piv)
+// {
+// 	int		pushed;
+// 	int		i;
+// 	int		plist_len;
+// 	//int		rot_counter;
+// 	//int		is_rotated;
+
+// 	pushed = 0;
+// 	i = 0;
+// 	//rot_counter = 0;
+// 	plist_len = (*(env->p_list))->count;			// dont sure which element is at the top of plist at the moment!!!!!!!
+// 	if ((*(env->p_list))->b_is_rot == 1)
+// 		plist_len += plist_len / 2;
+
+// 	//printf("Backpush A:\n");
+// 	//printf("The plist->count: %i\n", (*(env->p_list))->count);
+// 	//printf("The plist_len for iter: %i\n", plist_len);
+// 	//printf("The is_rot: %i\n", (*(env->p_list))->b_is_rot);
+
+// 	//printf("The piv is: %i\n", piv);
+// 	//debug_info(*(env->a), *(env->b), "test");
+
+// 	while (i < plist_len)
+// 	{
+// 		while (has_higher_piv(*(env->b), piv) && (*(env->b))->val < piv)
+// 		{
+// 			if (!((*(env->p_list))->b_is_rot))
+// 				command_dispatcher(env, "rb", 1);
+// 			else
+// 				command_dispatcher(env, "rrb", 1);
+// 			i++;
+// 		}
+// 		command_dispatcher(env, "pa", 1);
+// 		pushed++;
+// 		i++;
+// 		if (!has_higher_piv(*(env->b), piv) && i < plist_len)
+// 		{
+// 			while (i < plist_len)
+// 			{
+// 				if (!((*(env->p_list))->b_is_rot))
+// 					command_dispatcher(env, "rb", 1);
+// 				else
+// 					command_dispatcher(env, "rrb", 1);					// rotate too much for is_rot
+// 				i++;
+// 			}
+// 		}
+// 	}
+
+// 	(*(env->p_list))->b_is_rot = (*(env->p_list))->b_is_rot ? 0 : 1;
+
+	
+// 	(*(env->p_list))->count -= pushed;
+
+// 	//printf("The pushed: %i\n", pushed);
+// 	//printf("The new plist->count %i\n", (*(env->p_list))->count);
+
+// 	i = plist_len - pushed;
+// 	if ((*(env->p_list))->count <= 3)
+// 	{
+// 		//printf("Enter the if statement with i = %i\n", i);
+// 		// restore stack b
+// 		if ((*(env->p_list))->b_is_rot)
+// 		{
+// 			//printf("Before rrb loop with i = %i\n", i);
+// 			while (i--)
+// 				command_dispatcher(env, "rrb", 1);
+// 			(*(env->p_list))->b_is_rot = 0;
+// 		}
+// 	}
+
+// 	//printf("Rot counter B: %i\n", rot_counter);
+
+// 	//printf("Is rot: %i\n", *is_rot);
+// 	//printf("The i: %i\n", i);
+// 	//printf("The rot_count: %i\n", *rot_count);			// rot counter is half of plist->count and equal to new plist->count
+// 	//printf("The pushed count: %i\n", pushed);
+// 	//printf("The new plist->count: %i\n", (*(env->p_list))->count);
+	
+// 	// while (rot_counter--)									// if not restored before three_sort cause +200 operations
+// 	// 	command_dispatcher(env, "rrb", 1);
+
+// 	//printf("Pushed back to A: %i\n", (*p_list)->count);
+// 	plist_push(env->p_list, plist_el_create(pushed, 'A'));
+// 	return (*(env->p_list));
+// }
+
 int			stack_find_maxbound(t_env *env, int count)
 {
 	int		max_bound;
@@ -868,10 +956,10 @@ void		stacks_sort(t_env *env)
 	int		sort_size;
 	int		numb;
 	int		rot_ca;
-	//int		rot_cb;
+	int		rot_cb;
 
 	rot_ca = 0;
-	//rot_cb = 0;
+	rot_cb = 0;
 
 	full_size = list_size(*(env->a)) + list_size(*(env->b));
 
@@ -952,7 +1040,7 @@ void		stack_main_split(t_env *env)
 
 	pushed_total = 0;
 
-	// printf("Commands for main split:\n");
+	//printf("Commands for main split:\n");
 
 	while (list_size(*(env->a)) > 3)
 	{
@@ -999,7 +1087,7 @@ void		stack_main_split(t_env *env)
 	// 	tp_iter = tp_iter->next;
 	// }
 
-	// printf("Commands for stack-sort:\n");
+	//printf("Commands for stack-sort:\n");
 
 	// Sort start
 	numb = push_list->count > 3 ? 0 : push_list->count;

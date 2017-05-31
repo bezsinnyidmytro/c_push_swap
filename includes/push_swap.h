@@ -35,6 +35,7 @@ typedef struct		s_plist
 {
 	int				count;
 	char			to;
+	int				b_is_rot;
 	struct s_plist	*next;
 }					t_plist;
 
@@ -44,6 +45,7 @@ typedef struct 		s_env
 	t_stack			**b;
 	t_plist			**p_list;
 	int				*sort;
+	int				b_is_rot;
 }					t_env;
 
 int 				srt_asc(int a, int b);

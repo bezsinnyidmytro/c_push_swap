@@ -12,6 +12,9 @@
 
 #include "../includes/push_swap.h"
 
+// CHECK FOR STACK A BEING SORTED AS IT IS at the start of the program
+// CHECK FOR EMPTY STRING ARGUMENT
+
 void		reserv()
 {
 
