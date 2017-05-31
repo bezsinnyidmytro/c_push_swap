@@ -568,7 +568,7 @@ void		sort_three(t_env *env, t_plist *pa, int numb)
 	//t_stack	*iter;
 	//int		i;
 
-	printf("Sort three\n");
+	//printf("Sort three\n");
 
 	numa = pa ? pa->count : list_size(*(env->a));
 	numa = (numa > 3) ? 3 : numa;
@@ -694,7 +694,7 @@ t_plist		*backpush_a(t_env *env, int piv)
 	int		rot_counter;
 	//int		r_or_rr;
 
-	printf("Backpush A:\n");
+	//printf("Backpush A:\n");
 
 	//i = (*(env->p_list))->count;
 	//(*(env->p_list))->to = 'A';
@@ -806,7 +806,7 @@ t_plist		*backpush_b(t_env *env, int piv, t_plist **a_push, int *rot_ca)
 
 	// if (*rot_ca)
 	// 	printf("\n");
-	printf("Backpush B:\n");
+	//printf("Backpush B:\n");
 
 	pushed = 0;
 	//rot_counter = 0;
@@ -846,13 +846,13 @@ void		restore_a(t_env *env, int *rot_ca)
 {
 	if (*rot_ca > 0)
 	{
-		printf("Restore A commands: \n");
+		//printf("Restore A commands: \n");
 		while ((*rot_ca)--)
 			command_dispatcher(env, "rra", 1);
 	}
 	else if (*rot_ca < 0)
 	{
-		printf("Restore A commands: \n");
+		//printf("Restore A commands: \n");
 		while ((*rot_ca)++)
 			command_dispatcher(env, "ra", 1);
 	}
@@ -952,7 +952,7 @@ void		stack_main_split(t_env *env)
 
 	pushed_total = 0;
 
-	printf("Commands for main split:\n");
+	// printf("Commands for main split:\n");
 
 	while (list_size(*(env->a)) > 3)
 	{
@@ -999,7 +999,7 @@ void		stack_main_split(t_env *env)
 	// 	tp_iter = tp_iter->next;
 	// }
 
-	printf("Commands for stack-sort:\n");
+	// printf("Commands for stack-sort:\n");
 
 	// Sort start
 	numb = push_list->count > 3 ? 0 : push_list->count;
