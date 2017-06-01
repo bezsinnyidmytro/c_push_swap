@@ -81,6 +81,7 @@ SRC_FILES = ft_putchar.c \
 			ft_lst_concat.c \
 			ft_lstrev.c \
 			ft_lstcount.c \
+			ft_swap_int.c \
 			get_next_line.c
 
 SRC = $(addprefix $(SRC_LIB), $(SRC_FILES))

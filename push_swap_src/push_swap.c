@@ -62,7 +62,13 @@ int			main(int ac, char **av)
 		a = init_stack(i - 1, av + flags_count + 1);
 		env = init_env(&a, &b);
 		
-		stack_main_split(env);
+		if (list_size(*(env->a)) < 7)
+		{
+			//printf("Insert sort will be here :)\n");
+			small_stack_sort(env);
+		}
+		else if (!is_sorted(*(env->a), &srt_asc))
+			stack_main_split(env);
 
 		//list_to_arr_sort(a);
 		// fflush(stdout);
@@ -80,6 +86,6 @@ int			main(int ac, char **av)
 		// else
 		// 	printf("%sKO\n", KRED);
 	}
-	//while (1);
+	// while (1);
 	return (1);
 }

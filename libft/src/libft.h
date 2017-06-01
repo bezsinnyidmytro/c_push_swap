@@ -104,6 +104,7 @@ void				*ft_lstfold(t_list *alst, void *(*f)(t_list *elem));
 void				*ft_lst_concat(t_list *lst);
 size_t				ft_lstcount(t_list *lst);
 void				ft_lstrev(t_list **alst);
+void				ft_swap_int(int *a, int *b);
 
 int					get_next_line(int const fd, char **line);
 

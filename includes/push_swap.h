@@ -64,6 +64,7 @@ t_stack				*init_stack(int n_arg, char **av);
 t_env				*init_env(t_stack **a, t_stack **b);
 int					ps_flag_parse(int ac, char **av);
 int					list_size(t_stack *stack);
+void				small_stack_sort(t_env *env);
 
 int					*list_to_arr_sort(t_stack *list);
 

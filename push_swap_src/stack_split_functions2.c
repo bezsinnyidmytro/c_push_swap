@@ -5,119 +5,7 @@ void		reserve()
 
 }
 
-t_stack		*last_in_stack(t_stack *s)
-{
-	while (s->next)
-		s = s->next;
-	return (s);
-}
-
-t_stack		*prelast_in_stack(t_stack *s)
-{
-	while (s->next->next)
-		s = s->next;
-	return (s);
-}
-
-int 		min_val_pos(t_stack *ss)
-{
-	int		min;
-	int		i;
-	int		min_idx;
-
-	min = ss->val;
-	i = 1;
-	min_idx = i;
-	while (ss)
-	{
-		if (ss->val < min)
-		{
-			min = ss->val;
-			min_idx = i;
-		}
-		i++;
-		ss = ss->next;
-	}
-	return (min_idx);
-}
-
-void		small_stack_sort(t_env *env)
-{
-	// //t_stack	*stack;
-	// //int		val_last;
-	// //int		counter;
-	int			min_ord;
-
-	// if (env)
-	// 	printf("IDITE NAHYI EBANYE STACKi\n");
-
-	while (list_size(*(env->a)) > 3)
-	{
-		min_ord = min_val_pos(*(env->a));
-		//printf("Min pos: %i\n", min_ord);
-		if (min_ord <= list_size(*(env->a)) / 2)
-			while (--min_ord)
-				command_dispatcher(env, "ra", 1);
-		else
-			while (min_ord++ <= list_size(*(env->a)))
-				command_dispatcher(env, "rra", 1);
-		command_dispatcher(env, "pb", 1);
-	}
-	if (list_size(*(env->a)) > 1)
-		if ((*(env->a))->val > (*(env->a))->next->val)
-			command_dispatcher(env, "sa", 1);
-	if (list_size(*(env->a)) == 3)
-	{
-		if ((*(env->a))->next->next->val < (*(env->a))->next->val)
-			command_dispatcher(env, "rra", 1);
-		if ((*(env->a))->val > (*(env->a))->next->val)
-			command_dispatcher(env, "sa", 1);
-	}
-	while (list_size(*(env->b)) > 0)
-		command_dispatcher(env, "pa", 1);
-
-	// //stack = *(env->a);
-	// min_val = min_in_stack(*(env->a));
-	// printf("Min value is: %i\n", min_val);
-
-	// if ((*(env->a))->val == min_val)
-	// 	command_dispatcher(env, "ra", 1);
-
-	// while (!is_sorted(*(env->a), &srt_asc))
-	// {
-	// 	while ((*(env->a))->val > last_in_stack(*(env->a))->val)
-	// 	{
-	// 		command_dispatcher(env, "ra", 0);
-	// 		if (is_sorted(*(env->a), &srt_asc))
-	// 		{
-	// 			command_dispatcher(env, "ra", 1);
-	// 			command_dispatcher(env, "rra", 0);
-	// 			break ;
-	// 		}
-	// 		else
-	// 			command_dispatcher(env, "rra", 0);
-	// 		if ((*(env->a))->val > (*(env->a))->next->val)
-	// 			command_dispatcher(env, "sa", 1);
-	// 		if ((*(env->a))->val > last_in_stack(*(env->a))->val)
-	// 			command_dispatcher(env, "ra", 1);
-	// 	}
-	// 	if (is_sorted(*(env->a), &srt_asc))
-	// 		break ;
-	// 	while ((*(env->a))->val < last_in_stack(*(env->a))->val)
-	// 	{
-	// 		command_dispatcher(env, "rra", 1);
-	// 		command_dispatcher(env, "sa", 1);
-	// 	}
-	// 	//printf("Empty loop\n");
-	// 	//if ((*(env->a))->val > (*(env->a))->next->val)
-	// 	//	command_dispatcher(env, "sa", 1);
-	// 	//command_dispatcher(env, "ra", 1);
-
-	// 	//while ()
-	// }
-}
-
-char		*ft_dstrjoin(char *s1, char *s2, int ff1, int ff2)
+char	*ft_dstrjoin(char *s1, char *s2, int ff1, int ff2)
 {
 	size_t	len;
 	char	*str_new;
@@ -483,7 +371,7 @@ void		sort_three(t_env *env, t_plist *pa, int numb)
 	int		permA;
 	int		permB;
 
-	//printf("Sort three\n");
+	// printf("Sort three\n");
 	// if (!pa)
 	// 	printf("THERE IS NO POINTER TO PA\n");
 
@@ -508,10 +396,14 @@ void		sort_three(t_env *env, t_plist *pa, int numb)
 	else if (numb == 3)
 		permB = get_bperm_case((*(env->b))->val, (*(env->b))->next->val, (*(env->b))->next->next->val);
 
+	// printf("Perm A: %i, Perm B: %i\n", permA, permB);
+	// printf("numa: %i, numb %i\n", numa, numb);
 	process_perm_cases(env, permA, permB);
 
 	while (numb--)
 		command_dispatcher(env, "pa", 1);
+
+	//debug_info(*(env->a), *(env->b), "test");
 }
 
 // for rot_or_rrot
@@ -633,9 +525,12 @@ t_plist		*backpush_b(t_env *env, int piv, t_plist **a_push, int *rot_ca)
 	int		pushed;
 	int		r_or_rr;
 
-	//printf("Backpush B:\n");
+	// printf("Backpush B:\n");
+	// printf("Pivot is : %i\n", piv);
+	// debug_info(*(env->a), *(env->b), "test");
 
 	pushed = 0;
+
 	while (has_lower_piv(*(env->a), piv))
 	{
 
@@ -687,6 +582,9 @@ void		stacks_sort(t_env *env)
 	int		sort_size;
 	int		numb;
 	int		rot_ca;
+
+	//t_plist	*iter;
+	//int		plist_size;
 	//int		rot_cb;
 
 	rot_ca = 0;
@@ -696,7 +594,10 @@ void		stacks_sort(t_env *env)
 
 	while (*(env->p_list))
 	{
+
 		sort_size = list_size(*(env->a));
+		
+		a_push = NULL;
 		
 		piv2 = env->sort[(2 * full_size - 2 * sort_size - (*(env->p_list))->count) / 2];
 
@@ -705,13 +606,19 @@ void		stacks_sort(t_env *env)
 		else if ((*(env->p_list))->to == 'B' && (*(env->p_list))->count <= 3)	// add for UBUNTU
 			a_push = NULL;
 
+		//printf("Ubuntu break 1\n");
+
 		while (a_push && a_push->count > 3)
 		{
-			piv = env->sort[(2 * full_size - sort_size - list_size(*(env->a))) / 2];
+			//debug_info(*(env->a), *(env->b), "test_before_pivot");
+			piv = env->sort[(2 * full_size - sort_size - list_size(*(env->a))) / 2];		//piv troubles on ubuntu 
 			plist_push(env->p_list, backpush_b(env, piv, &a_push, &rot_ca));
 		}
 
 		numb = ((*(env->p_list))->to == 'B') ? (*(env->p_list))->count : (*(env->p_list))->next->count;
+		
+		// if (!(*(env->p_list))->next)											// add for UBUNTU
+		// 	printf("THERE IS NO p_list->next!\n");
 
 		restore_a(env, &rot_ca);
 
@@ -772,7 +679,6 @@ void		stack_main_split(t_env *env)
 	{
 		plist_pop_free(&push_list);			// should use free here probably
 	}
-
 	env->p_list = &push_list;
 
 	stacks_sort(env);
