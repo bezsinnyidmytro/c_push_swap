@@ -15,6 +15,7 @@
 // CHECK FOR STACK A BEING SORTED AS IT IS at the start of the program
 // CHECK FOR EMPTY STRING ARGUMENT
 // CHECK FOR LENGTH AND USE ANOTHER SORT IF LESS THAN 6
+// SEGFAULT ON 3 and less arguments
 
 void		reserv()
 {

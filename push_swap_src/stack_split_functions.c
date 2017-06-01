@@ -372,6 +372,8 @@ void		sort_three(t_env *env, t_plist *pa, int numb)
 	int		permB;
 
 	//printf("Sort three\n");
+	// if (!pa)
+	// 	printf("THERE IS NO POINTER TO PA\n");
 
 	numa = pa ? pa->count : list_size(*(env->a));
 	numa = (numa > 3) ? 3 : numa;
@@ -573,10 +575,10 @@ void		stacks_sort(t_env *env)
 	int		sort_size;
 	int		numb;
 	int		rot_ca;
-	int		rot_cb;
+	//int		rot_cb;
 
 	rot_ca = 0;
-	rot_cb = 0;
+	//rot_cb = 0;
 
 	full_size = list_size(*(env->a)) + list_size(*(env->b));
 
@@ -588,6 +590,8 @@ void		stacks_sort(t_env *env)
 
 		if ((*(env->p_list))->to == 'B' && (*(env->p_list))->count > 3)			// probably can delete if-part->to == 'B'
 			a_push = backpush_a(env, piv2);
+		else if ((*(env->p_list))->to == 'B' && (*(env->p_list))->count <= 3)	// add for UBUNTU
+			a_push = NULL;
 
 		while (a_push && a_push->count > 3)
 		{

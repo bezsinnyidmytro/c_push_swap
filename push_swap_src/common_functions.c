@@ -76,7 +76,7 @@ void			error_call(char *message)
 	write(2, "Error. ", 7);
 	if (message)
 		write(2, message, ft_strlen(message));
-	write(2, "\n", 1);
+	write(2, ".\n", 2);
 	//ft_putstr(KWHT);
 	//ft_putstr("This should be another color.\n");
 	exit(1);
@@ -165,7 +165,7 @@ void			command_dispatcher(t_env *env, char *cmd, int announce)
 	else
 	{
 		//error_call("Invalid instruction.");
-		error_call(ft_strjoin("Invalid instruction. ", cmd));
+		error_call(ft_strjoin("Invalid instruction: ", cmd));
 	}
 }
 
@@ -204,18 +204,18 @@ t_stack			*init_stack(int n_arg, char **av)
 		if (!check_str(str_args[i], &is_sign_or_digit))
 		{
 			//printf("%s\n", str_args[i]);
-			error_call("Bad INTEGER input.");
+			error_call("Bad INTEGER input");
 		}
 		val = ft_atoimax(str_args[i]);
 		//printf("Converted integer is %zi\n", val);
 		if (val < INT_MIN || val > INT_MAX)
-			error_call("Value is out of INTEGER range.");
+			error_call("Value is out of INTEGER range");
 		if (stack_is_dup(a, val))
-			error_call("Integer value duplicates are forbidden.");
+			error_call("Integer value duplicates are forbidden");
 		push(&a, s_el_create(val));
 	}
 	if (a == NULL)					// set for UBUNTU
-		error_call("Memalloc error. Or empty argument list.");
+		error_call("Memalloc error. Or empty argument list");
 	if (n_arg == 1)
 	{
 		str_arr_free(str_args);
