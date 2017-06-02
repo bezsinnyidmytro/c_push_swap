@@ -60,9 +60,12 @@ int			main(int ac, char **av)
 		// if (a == NULL && b == NULL)					// set for UBUNTU
 		// 	error_call("Memalloc error.");
 		a = init_stack(i - 1, av + flags_count + 1);
+
 		env = init_env(&a, &b);
 		
-		if (list_size(*(env->a)) < 7)
+		//ft_printf("The size of stack A: %i\n", list_size(*(env->a)));
+
+		if (!is_sorted(*(env->a), &srt_asc) && list_size(*(env->a)) < 7)
 		{
 			//ft_printf("Insert sort will be here :)\n");
 			small_stack_sort(env);

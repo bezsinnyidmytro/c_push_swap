@@ -68,7 +68,7 @@ void				small_stack_sort(t_env *env);
 
 int					*list_to_arr_sort(t_stack *list);
 
-void				debug_info(t_stack const *a, t_stack const *b, char *cmd);
+void				debug_info(t_stack *a, t_stack *b, char *cmd);
 
 void				stack_main_split(t_env *env);
 
