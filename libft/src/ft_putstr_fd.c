@@ -22,3 +22,14 @@ void	ft_putstr_fd(char const *s, int fd)
 		s++;
 	}
 }
+
+void	ft_fdputstr(char const *str, int fd)
+{
+	if (!str)
+		return ;
+	while (*str)
+	{
+		ft_fdputchar(*str, fd);
+		str++;
+	}
+}

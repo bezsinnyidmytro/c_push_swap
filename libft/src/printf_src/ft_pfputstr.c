@@ -1,35 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   ft_pfputstr.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dbezsinn <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/12/06 14:37:52 by dbezsinn          #+#    #+#             */
-/*   Updated: 2016/12/06 14:37:53 by dbezsinn         ###   ########.fr       */
+/*   Created: 2017/06/02 13:37:56 by dbezsinn          #+#    #+#             */
+/*   Updated: 2017/06/02 13:37:57 by dbezsinn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../libft.h"
 
-char	*ft_strdup(const char *s1)
+void				ft_pfputstr(t_pfarg *arg, int fd)
 {
-	unsigned long int	size;
-	char				*str_new;
-	int					i;
+	char	ch;
 
-	if (!s1)
-		return (NULL);
-	i = 0;
-	size = ft_strlen(s1);
-	str_new = ft_strnew(size);
-	if (!str_new)
-		return (NULL);
-	while (s1[i])
-	{
-		str_new[i] = s1[i];
-		i++;
-	}
-	str_new[i] = '\0';
-	return (str_new);
+	ch = '\0';
+	if (arg->is_zero_char == 1 && (arg->fmt_flags & 4) == 4)
+		write(fd, &ch, 1);
+	ft_fdputstr(arg->cnt, fd);
+	if (arg->is_zero_char == 1 && (arg->fmt_flags | 4) != arg->fmt_flags)
+		write(fd, &ch, 1);
 }

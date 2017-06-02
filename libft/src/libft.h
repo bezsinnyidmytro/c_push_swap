@@ -19,6 +19,8 @@
 # include <fcntl.h>
 # include <stdio.h>
 # include <inttypes.h>
+# include <stdarg.h>
+# include <wchar.h>
 
 # define GNL_BUFF_SIZE 4
 
@@ -36,12 +38,27 @@ typedef struct		s_file
 	struct s_file	*next;
 }					t_file;
 
+typedef struct		s_pfarg
+{
+	char			*cnt;
+	size_t			cnt_len;
+	int				fmt_flags;
+	int				width;
+	int				prec;
+	int				size_flag;
+	char			c_type;
+	int				is_zero_char;
+	va_list			*argp;
+}					t_pfarg;
+
 void				ft_putchar(char ch);
 void				ft_putstr(char const *str);
 void				ft_putendl(char const *str);
 void				ft_putnbr(int nb);
 void				ft_putchar_fd(char c, int fd);
+void				ft_fdputchar(char ch, int fd);
 void				ft_putstr_fd(char const *s, int fd);
+void				ft_fdputstr(char const *str, int fd);
 void				ft_putendl_fd(char const *s, int fd);
 void				ft_putnbr_fd(int n, int fd);
 int					ft_tolower(int ch);
@@ -88,8 +105,8 @@ int					ft_strnequ(char const *s1, char const *s2, size_t n);
 char				*ft_strsub(char const *s, unsigned int start, size_t len);
 char				*ft_strjoin(char const *s1, char const *s2);
 char				*ft_strtrim(char const *s);
-char				*ft_itoa(int n);
-int					ft_nbrlen(int n);
+char				*ft_itoa(ssize_t n);
+int					ft_nbrlen(ssize_t n);
 char				**ft_strsplit(char const *s, char c);
 int					ft_countwords(char const *s, char c);
 t_list				*ft_lstnew(void const *content, size_t content_size);
@@ -107,7 +124,37 @@ void				ft_lstrev(t_list **alst);
 void				ft_swap_int(int *a, int *b);
 char				*ft_uitoa_base(size_t val, int base);
 char				*ft_strndup(const char *s1, unsigned int n);
+char				*ft_dstrjoin(char *s1, char *s2, int ff1, int ff2);
+void				ft_strcap(char *str);
+void				ft_swap_chars(char *a, char *b);
 
 int					get_next_line(int const fd, char **line);
+
+int					ft_printf(const char *str, ...);
+void				struct_parse(const char **str, va_list *ap,
+								size_t *b_printed, int fd);
+int					parse_size_flags(const char **str, t_pfarg *arg);
+int					parse_prec(const char **str, t_pfarg *arg, int prec);
+int					parse_width(const char **str, t_pfarg *arg);
+int					parse_fmt_flags(const char **str, t_pfarg *arg);
+size_t				s_size_parse(t_pfarg *arg);
+size_t				u_size_parse(t_pfarg *arg);
+char				*string_parse(t_pfarg *arg);
+char				*char_parse(t_pfarg *arg, int udef_flag);
+long double			ft_round_fraction(long double t);
+char				*pre_format(t_pfarg *arg);
+void				prec_format(t_pfarg *arg, char **end_content);
+void				hash_format(t_pfarg *arg, char **end_content);
+void				signed_sign_format(t_pfarg *arg, char **end_content);
+void				zero_minus_format(t_pfarg *arg, char **end_content);
+void				common_format(t_pfarg *arg);
+char				*ft_uitoa(size_t n);
+void				ft_pfputstr(t_pfarg *arg, int fd);
+char				*ft_ftoa(long double val, int prec);
+char				*ft_etoa(long double val, int prec);
+int					*parse_values(int a, int b, int c);
+char				*e_conversion(long double val, int prec);
+char				*fe_dispatcher(t_pfarg *arg);
+void				ft_pfputstr(t_pfarg *arg, int fd);
 
 #endif

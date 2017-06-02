@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-static void		ft_itoa_pos(int n, int size, char **str)
+static void		ft_itoa_pos(ssize_t n, int size, char **str)
 {
 	while (--size >= 0)
 	{
@@ -21,7 +21,7 @@ static void		ft_itoa_pos(int n, int size, char **str)
 	}
 }
 
-static void		ft_itoa_neg(int n, int size, char **str)
+static void		ft_itoa_neg(ssize_t n, int size, char **str)
 {
 	(*str)[0] = '-';
 	while (--size >= 1)
@@ -31,7 +31,7 @@ static void		ft_itoa_neg(int n, int size, char **str)
 	}
 }
 
-char			*ft_itoa(int n)
+char			*ft_itoa(ssize_t n)
 {
 	int		size;
 	char	*str;

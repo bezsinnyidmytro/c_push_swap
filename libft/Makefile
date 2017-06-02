@@ -82,7 +82,26 @@ SRC_FILES = ft_putchar.c \
 			ft_lstrev.c \
 			ft_lstcount.c \
 			ft_swap_int.c \
-			get_next_line.c
+			ft_uitoa_base.c \
+			ft_strndup.c \
+			ft_dstrjoin.c \
+			ft_strcap.c \
+			ft_swap_chars.c \
+			\
+			get_next_line.c \
+			\
+			printf_src/ft_printf.c \
+			printf_src/ft_pfputstr.c \
+			printf_src/arg_struct_parse.c \
+			printf_src/char_str_arg_parser.c \
+			printf_src/e_conversion.c \
+			printf_src/float_round.c \
+			printf_src/float_to_str.c \
+			printf_src/format_controller.c \
+			printf_src/format_flags_parser.c \
+			printf_src/numeric_arg_parser.c \
+			printf_src/printf_formats.c \
+			printf_src/zero_minus_flags.c
 
 SRC = $(addprefix $(SRC_LIB), $(SRC_FILES))
 OBJ = $(SRC:.c=.o)

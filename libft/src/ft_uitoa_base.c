@@ -9,7 +9,7 @@
 /*   Updated: 2017/06/02 12:49:26 by dbezsinn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-	
+
 #include "libft.h"
 
 static void	parse(size_t n, int b, char *res, int *i)
