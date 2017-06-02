@@ -1,10 +1,5 @@
  #include "../includes/push_swap.h"
 
-void		reserve()
-{
-
-}
-
 t_stack		*last_in_stack(t_stack *s)
 {
 	while (s->next)
@@ -43,9 +38,6 @@ int 		min_val_pos(t_stack *ss)
 
 void		small_stack_sort(t_env *env)
 {
-	// //t_stack	*stack;
-	// //int		val_last;
-	// //int		counter;
 	int			min_ord;
 
 	// if (env)
@@ -75,66 +67,6 @@ void		small_stack_sort(t_env *env)
 	}
 	while (list_size(*(env->b)) > 0)
 		command_dispatcher(env, "pa", 1);
-
-	// //stack = *(env->a);
-	// min_val = min_in_stack(*(env->a));
-	// ft_printf("Min value is: %i\n", min_val);
-
-	// if ((*(env->a))->val == min_val)
-	// 	command_dispatcher(env, "ra", 1);
-
-	// while (!is_sorted(*(env->a), &srt_asc))
-	// {
-	// 	while ((*(env->a))->val > last_in_stack(*(env->a))->val)
-	// 	{
-	// 		command_dispatcher(env, "ra", 0);
-	// 		if (is_sorted(*(env->a), &srt_asc))
-	// 		{
-	// 			command_dispatcher(env, "ra", 1);
-	// 			command_dispatcher(env, "rra", 0);
-	// 			break ;
-	// 		}
-	// 		else
-	// 			command_dispatcher(env, "rra", 0);
-	// 		if ((*(env->a))->val > (*(env->a))->next->val)
-	// 			command_dispatcher(env, "sa", 1);
-	// 		if ((*(env->a))->val > last_in_stack(*(env->a))->val)
-	// 			command_dispatcher(env, "ra", 1);
-	// 	}
-	// 	if (is_sorted(*(env->a), &srt_asc))
-	// 		break ;
-	// 	while ((*(env->a))->val < last_in_stack(*(env->a))->val)
-	// 	{
-	// 		command_dispatcher(env, "rra", 1);
-	// 		command_dispatcher(env, "sa", 1);
-	// 	}
-	// 	//ft_printf("Empty loop\n");
-	// 	//if ((*(env->a))->val > (*(env->a))->next->val)
-	// 	//	command_dispatcher(env, "sa", 1);
-	// 	//command_dispatcher(env, "ra", 1);
-
-	// 	//while ()
-	// }
-}
-
-char		*ft_dstrjoin(char *s1, char *s2, int ff1, int ff2)
-{
-	size_t	len;
-	char	*str_new;
-
-	if (!s1 || !s2)
-		return (NULL);
-	len = ft_strlen(s1) + ft_strlen(s2);
-	str_new = ft_strnew(len);
-	if (!str_new)
-		return (NULL);
-	str_new = ft_strcat(str_new, s1);
-	str_new = ft_strcat(str_new, s2);
-	if (ff1)
-		free(s1);
-	if (ff2)
-		free(s2);
-	return (str_new);
 }
 
 t_plist		*plist_el_create(int val, char to)
@@ -248,79 +180,6 @@ int			get_bperm_case(int a, int b, int c)
 	return (perm_case);
 }
 
-void		ft_strreplacechr(char *str, char find, char replace)
-{
-	if (!str)
-		return ;
-	while (*str)
-	{
-		if (*str == find)
-			*str = replace;
-		str++;
-	}
-}
-
-char		**get_clist(int perm_case, char stack_heading)
-{
-	char	*cstr;
-
-	cstr = NULL;
-	if (perm_case == 1)
-		cstr = ft_strdup("sa");
-	else if (perm_case == 2)
-		cstr = ft_strdup("ra sa rra sa");
-	else if (perm_case == 3)
-		cstr = ft_strdup("sa ra sa rra sa");
-	else if (perm_case == 4)
-		cstr = ft_strdup("sa ra sa rra");
-	else if (perm_case == 5)
-		cstr = ft_strdup("ra sa rra");
-	if (stack_heading == 'b')
-		ft_strreplacechr(cstr, 'a', 'b');
-	return (ft_strsplit(cstr, ' '));
-}
-
-int			is_stackable_cmd(char *cmd_a, char *cmd_b)
-{
-	int		alen;
-	int		blen;
-	int		i;
-
-	alen = ft_strlen(cmd_a);
-	blen = ft_strlen(cmd_b);
-	if (alen == blen)
-	{
-		i = -1;
-		while (++i < alen - 1)
-		{
-			if (cmd_a[i] != cmd_b[i])
-				return (0);
-		}
-		return (1);
-	}
-	return (0);
-}
-
-int			has_stackable_cmd(char *cmd, char **iter)
-{
-	while (iter && *iter)
-	{
-		if (is_stackable_cmd(cmd, *iter))
-			return (1);
-		iter++;
-	}
-	return (0);
-}
-
-void		run_common_cmd(t_env *env, char *cmd)
-{
-	int		len;
-
-	len = ft_strlen(cmd);
-	cmd[len - 1] = (cmd[len - 1] == 'a') ? 's' : 'r';
-	command_dispatcher(env, cmd, 1);
-}
-
 void		common_triple_cmd(t_env *env)
 {
 	command_dispatcher(env, "rr", 1);
@@ -328,7 +187,6 @@ void		common_triple_cmd(t_env *env)
 	command_dispatcher(env, "rrr", 1);
 }
 
-//void		run_triple_cmd(t_env *env, char stack, int mask)
 void		run_triple_cmd(t_env *env, char stack, int mask)
 {
 	if (stack == 'a')
@@ -489,7 +347,6 @@ void		sort_three(t_env *env, t_plist *pa, int numb)
 
 	numa = pa ? pa->count : list_size(*(env->a));
 	numa = (numa > 3) ? 3 : numa;
-
 	permA = 0;
 	permB = 0;
 	if (numa == 2)

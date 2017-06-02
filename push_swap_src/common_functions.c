@@ -29,7 +29,7 @@ int			is_sign_or_digit(char ch)
 	return (0);
 }
 
-int			check_str(const char *str, int (*f)(char))			// need to trim and check if it's not empty
+int			check_str(const char *str, int (*f)(char))
 {
 	while (*str)
 	{
@@ -82,29 +82,81 @@ void			error_call(char *message)
 	exit(1);
 }
 
+void			printf_justified(int *a, int *b)
+{
+	int			alen;
+	int			blen;
+
+	ft_printf("\t| ");
+	if (a)
+	{
+		alen = ft_nbrlen(*a);
+		alen = (*a < 0) ? alen - 1 : alen;
+		ft_printf("%*s", (10 - alen) / 2, "");
+		ft_printf("%-*i", 10 - (10 - alen) / 2, *a);
+	}
+	else
+		ft_printf("%10s", "");
+	ft_printf(" || ");
+	if (b)
+	{
+		blen = ft_nbrlen(*b);
+		alen = (*b < 0) ? blen - 1 : blen;
+		ft_printf("%*s", (10 - blen) / 2, "");
+		ft_printf("%-*i", 10 - (10 - blen) / 2, *b);
+	}
+	else
+		ft_printf("%10s", "");
+	ft_printf(" |\n");
+
+}
+
 void			debug_info(t_stack const *a, t_stack const *b, char *cmd)
 {
-	t_stack		*iter;
+	t_stack		*iter_a;
+	t_stack		*iter_b;
 
 	if (cmd)
 		ft_printf("\n\tCommand: %s\n", cmd);
-	iter = (t_stack *)a;
-	ft_printf("\tStack A:\n\t\t");
-	while (iter)
+	iter_a = (t_stack *)a;
+	iter_b = (t_stack *)b;
+	ft_printf("\t____________________________\n");
+	ft_printf("\t| %10s || %10s |\n", "Stack A ", "Stack B ");
+	ft_printf("\t----------------------------\n");
+	while (iter_a || iter_b)
 	{
-		ft_printf("%*d", ft_nbrlen(iter->val) + 3, iter->val);
-		iter = iter->next;
+		if (iter_a && iter_b)
+		{
+			//ft_printf("\t| %9i || %9i |\n", iter_a->val, iter_b->val);
+			printf_justified(&(iter_a->val), &(iter_b->val));
+			iter_a = iter_a->next;
+			iter_b = iter_b->next;
+		}
+		else if (iter_a && !iter_b)
+		{
+			//ft_printf("\t| %9i || %9s |\n", iter_a->val, "");
+			printf_justified(&(iter_a->val), NULL);
+			iter_a = iter_a->next;
+		}
+		else
+		{
+			//ft_printf("\t| %9s || %9i |\n", "", iter_b->val);
+			printf_justified(NULL, &(iter_b->val));
+			iter_b = iter_b->next;			
+		}
+		// ft_printf("%*d", ft_nbrlen(iter_a->val) + 3, iter_a->val);
+		// iter_a = iter_a->next;
 	}
-	iter = (t_stack *)b;
-	ft_printf("\n\tStack B:\n\t\t");
-	while (iter)
-	{
-		ft_printf("%*d", ft_nbrlen(iter->val) + 3, iter->val);
-		iter = iter->next;
-	}
+	ft_printf("\t----------------------------\n");
+	//ft_printf("\n\tStack B:\n\t\t");
+	// while (iter_b)
+	// {
+	// 	ft_printf("%*d", ft_nbrlen(iter_b->val) + 3, iter_b->val);
+	// 	iter_b = iter_b->next;
+	// }
 	ft_printf("\n\n");
 	//ft_printf("Input a command (pa, pb, sa, sb, ra, rb, rr, rra, rrb, rrr):\n");
-	fflush(stdout);
+	//fflush(stdout);
 }
 
 t_stack			*s_el_create(int val)
@@ -117,7 +169,6 @@ t_stack			*s_el_create(int val)
 	return (el);
 }
 
-//void			command_dispatcher(t_stack **a, t_stack **b, char *cmd, int announce)
 void			command_dispatcher(t_env *env, char *cmd, int announce)
 {
 	t_stack		**a;
@@ -163,10 +214,7 @@ void			command_dispatcher(t_env *env, char *cmd, int announce)
 		rrotate(b);
 	}
 	else
-	{
-		//error_call("Invalid instruction.");
 		error_call(ft_strjoin("Invalid instruction: ", cmd));
-	}
 }
 
 void			str_arr_free(char **arr)
@@ -180,7 +228,6 @@ void			str_arr_free(char **arr)
 
 t_stack			*init_stack(int n_arg, char **av)
 {
-	// Emty string "" is parsed as 0 - need to trim and check if the string is not emty
 	t_stack		*a;
 	int			i;
 	intmax_t	val;

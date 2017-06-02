@@ -86,6 +86,9 @@ int				main(int ac, char **av)
 		// ft_printf("Input a command (pa, pb, sa, sb, ra, rb, rr, rra, rrb, rrr):\n");
 		// fflush(stdout);
 
+		if (debug)
+			debug_info(*(env->a), *(env->b), NULL);
+
 		// Read commnd on standard input and process it
 		while ((get_next_line(0, &command)))
 		{

@@ -21,7 +21,6 @@ int		*list_to_arr(t_stack *s_top, size_t num_el)
 		res[i - 1] = s_top->val;
 		s_top = s_top->next;
 	}
-	// if there is not enough elements in stack you need to free array and return NULL
 	return (res);
 }
 
@@ -94,105 +93,11 @@ int		*list_to_arr_sort(t_stack *list)
 {
 	int		*int_tab;
 	int		tab_size;
-	//int		i;
 	int		swaps;
-	//double	piv;
-	//int		less_than_piv;
 
 	tab_size = list_size(list);
-	
-	//ft_printf("The size of stack is: %i\n", tab_size);
-	
 	int_tab = list_to_arr(list, tab_size);
-	// int_tab = (int *)malloc(sizeof(int) * tab_size);
-	// i = -1;
-	// while (++i < tab_size)
-	// 	int_tab[i] = atoi(av[i + 1]);
-
-	// print tab
-	// i = -1;
-	// ft_printf("Not sorted int_tab:\n");
-	// while (++i < tab_size)
-	// 	ft_printf("%d ", int_tab[i]);
-	//arr_qsort(0, tab_size - 1, int_tab);
-
-
 	swaps = 0;
 	arr_qsort(0, tab_size - 1, int_tab, &swaps);
-	
-
-	//ft_printf("\n");
-	// print tab after sort
-
-	// i = -1;
-	// ft_printf("Sorted int_tab:\n");
-	// while (++i < tab_size)
-	// 	ft_printf("%d ", int_tab[i]);
-	// ft_printf("\n\n");
-	// //piv = (tab_size % 2) ? int_tab[tab_size / 2] : (int_tab[tab_size / 2 + 1] + int_tab[tab_size / 2 -1]) / 2.0;
-	// piv = int_tab[tab_size / 2];
-
-
-	//is_sorted_tab(int_tab, 0, tab_size - 1, &asc) ? ft_printf("Is sorted: OK\n") : ft_printf("Is sorted: KO\n");
-
-	
-	// ft_printf("\nNumber of element swaps: %i\n", swaps);
-	// ft_printf("\nPivot is: %f\n", piv);
-	// i = -1;
-	// less_than_piv = 0;
-	// while (++i < tab_size && int_tab[i] < piv)
-	// 	less_than_piv++;
-	// ft_printf("\nNum elements less than Pivot: %i\n", less_than_piv);
-	// ft_printf("\nNum elements more than or equal to Pivot: %i\n\n", tab_size - less_than_piv);
-	
 	return (int_tab);
-	// return (0);
 }
-
-// int		main(int ac, char **av)
-// {
-// 	int		*int_tab;
-// 	int		tab_size;
-// 	int		i;
-// 	int		swaps;
-// 	double	piv;
-// 	int		less_than_piv;
-
-// 	if (ac > 1)
-// 	{
-// 		tab_size = ac - 1;
-// 		int_tab = (int *)malloc(sizeof(int) * tab_size);
-// 		i = -1;
-// 		while (++i < tab_size)
-// 			int_tab[i] = atoi(av[i + 1]);
-
-// 		// print tab
-// 		// i = -1;
-// 		// ft_printf("Not sorted int_tab:\n");
-// 		// while (++i < tab_size)
-// 		// 	ft_printf("%d ", int_tab[i]);
-// 		//arr_qsort(0, tab_size - 1, int_tab);
-// 		swaps = 0;
-// 		arr_qsort(0, tab_size - 1, int_tab, &swaps);
-// 		//ft_printf("\n");
-// 		// print tab after sort
-// 		i = -1;
-// 		ft_printf("Sorted int_tab:\n");
-// 		while (++i < tab_size)
-// 			ft_printf("%d ", int_tab[i]);
-// 		ft_printf("\n\n");
-// 		//piv = (tab_size % 2) ? int_tab[tab_size / 2] : (int_tab[tab_size / 2 + 1] + int_tab[tab_size / 2 -1]) / 2.0;
-// 		piv = int_tab[tab_size / 2];
-// 		is_sorted_tab(int_tab, 0, tab_size - 1, &asc) ? ft_printf("Is sorted: OK\n") : ft_printf("Is sorted: KO\n");
-// 		ft_printf("\nNumber of element swaps: %i\n", swaps);
-// 		ft_printf("\nPivot is: %f\n", piv);
-// 		i = -1;
-// 		less_than_piv = 0;
-// 		while (++i < tab_size && int_tab[i] < piv)
-// 			less_than_piv++;
-// 		ft_printf("\nNum elements less than Pivot: %i\n", less_than_piv);
-// 		ft_printf("\nNum elements more than or equal to Pivot: %i\n\n", tab_size - less_than_piv);
-// 		return (1);
-// 	}
-// 	return (0);
-// }
