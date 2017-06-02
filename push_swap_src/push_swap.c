@@ -52,7 +52,7 @@ int			main(int ac, char **av)
 		// 	if (!check_str(av[i], &is_sign_or_digit))
 		// 		error_call("Bad INTEGER input.");
 		// 	val = ft_atoimax(av[i]);
-		// 	//printf("Converted integer is %zi\n", val);
+		// 	//ft_printf("Converted integer is %zi\n", val);
 		// 	if (val < INT_MIN || val > INT_MAX)
 		// 		error_call("Value is out of INTEGER range.");
 		// 	push(&a, s_el_create(val));
@@ -64,7 +64,7 @@ int			main(int ac, char **av)
 		
 		if (list_size(*(env->a)) < 7)
 		{
-			//printf("Insert sort will be here :)\n");
+			//ft_printf("Insert sort will be here :)\n");
 			small_stack_sort(env);
 		}
 		else if (!is_sorted(*(env->a), &srt_asc))
@@ -82,9 +82,9 @@ int			main(int ac, char **av)
 		// }
 		
 		// if (is_sorted(a, &srt_asc) && !b)
-		// 	printf("%sOK\n", KGRN);
+		// 	ft_printf("%sOK\n", KGRN);
 		// else
-		// 	printf("%sKO\n", KRED);
+		// 	ft_printf("%sKO\n", KRED);
 	}
 	// while (1);
 	return (1);

@@ -23,7 +23,7 @@ int				main(int ac, char **av)
 	// 	fd = open(av[1], O_RDONLY);
 	// 	while (get_next_line(fd, &line))
 	// 	{
-	// 		printf("%s\n", line);
+	// 		ft_printf("%s\n", line);
 	// 		free(line);
 	// 	}
 	// 	close(fd);
@@ -44,9 +44,9 @@ int				main(int ac, char **av)
 	a = NULL;
 	b = NULL;
 	flags_count = ps_flag_parse(ac, av);
-	//printf("The flag_count: %i\n", flag_count);
+	//ft_printf("The flag_count: %i\n", flag_count);
 	i = ac - flags_count;
-	//printf("The i = ac - flag_count: %i\n", i);
+	//ft_printf("The i = ac - flag_count: %i\n", i);
 	debug = flags_count ? 1 : 0;
 	if (i > 1)
 	{
@@ -67,23 +67,23 @@ int				main(int ac, char **av)
 		// 	push(&a, s_el_create(ft_atoi(arg_s[i])));
 		
 		// iter = a;
-		// printf("\tStack A:\n\t\t");
+		// ft_printf("\tStack A:\n\t\t");
 		// while (iter)
 		// {
-		// 	printf("%5d", iter->val);
+		// 	ft_printf("%5d", iter->val);
 		// 	iter = iter->next;
 		// }
 		// iter = b;
-		// printf("\n\tStack B:\n\t\t");
+		// ft_printf("\n\tStack B:\n\t\t");
 		// while (iter)
 		// {
-		// 	printf("%5d", iter->val);
+		// 	ft_printf("%5d", iter->val);
 		// 	iter = iter->next;
 		// }
-		// printf("\n");
+		// ft_printf("\n");
 		// fflush(stdout);
 
-		// printf("Input a command (pa, pb, sa, sb, ra, rb, rr, rra, rrb, rrr):\n");
+		// ft_printf("Input a command (pa, pb, sa, sb, ra, rb, rr, rra, rrb, rrr):\n");
 		// fflush(stdout);
 
 		// Read commnd on standard input and process it
@@ -100,28 +100,28 @@ int				main(int ac, char **av)
 		// 	push(&b, pop_el);
 		
 		if (is_sorted(*(env->a), &srt_asc) && !(*(env->b)))
-			printf("%sOK\n", KGRN);
+			ft_printf("%sOK\n", KGRN);
 		else
-			printf("%sKO\n", KRED);
+			ft_printf("%sKO\n", KRED);
 		// if (!debug)
 		// {
 			// Print values form A
-			// printf("\nStack A after processing commands:\n");
+			// ft_printf("\nStack A after processing commands:\n");
 			// while (a)
 			// {
-			// 	printf("%d ", a->val);
+			// 	ft_printf("%d ", a->val);
 			// 	a = a->next;
 			// }
-			// printf("\n");
+			// ft_printf("\n");
 
 		// 	// Print values from B
-		// 	printf("\nStack B after processing commands:\n");
+		// 	ft_printf("\nStack B after processing commands:\n");
 		// 	while (b)
 		// 	{
-		// 		printf("%d ", b->val);
+		// 		ft_printf("%d ", b->val);
 		// 		b = b->next;
 		// 	}
-		// 	printf("\n");
+		// 	ft_printf("\n");
 		// }
 	}
 	// while (1);

@@ -87,23 +87,23 @@ void			debug_info(t_stack const *a, t_stack const *b, char *cmd)
 	t_stack		*iter;
 
 	if (cmd)
-		printf("\n\tCommand: %s\n", cmd);
+		ft_printf("\n\tCommand: %s\n", cmd);
 	iter = (t_stack *)a;
-	printf("\tStack A:\n\t\t");
+	ft_printf("\tStack A:\n\t\t");
 	while (iter)
 	{
-		printf("%*d", ft_nbrlen(iter->val) + 3, iter->val);
+		ft_printf("%*d", ft_nbrlen(iter->val) + 3, iter->val);
 		iter = iter->next;
 	}
 	iter = (t_stack *)b;
-	printf("\n\tStack B:\n\t\t");
+	ft_printf("\n\tStack B:\n\t\t");
 	while (iter)
 	{
-		printf("%*d", ft_nbrlen(iter->val) + 3, iter->val);
+		ft_printf("%*d", ft_nbrlen(iter->val) + 3, iter->val);
 		iter = iter->next;
 	}
-	printf("\n\n");
-	//printf("Input a command (pa, pb, sa, sb, ra, rb, rr, rra, rrb, rrr):\n");
+	ft_printf("\n\n");
+	//ft_printf("Input a command (pa, pb, sa, sb, ra, rb, rr, rra, rrb, rrr):\n");
 	fflush(stdout);
 }
 
@@ -127,10 +127,10 @@ void			command_dispatcher(t_env *env, char *cmd, int announce)
 	b = env->b;
 
 	if (announce)
-		printf("%s\n", cmd);
+		ft_printf("%s\n", cmd);
 	if (ft_strcmp(cmd, "pa") == 0)
 	{
-		//printf("Pushed to A: %i\n", (*b)->val);
+		//ft_printf("Pushed to A: %i\n", (*b)->val);
 		push(a, pop(b));
 	}
 	else if (ft_strcmp(cmd, "pb") == 0)
@@ -203,11 +203,11 @@ t_stack			*init_stack(int n_arg, char **av)
 	{
 		if (!check_str(str_args[i], &is_sign_or_digit))
 		{
-			//printf("%s\n", str_args[i]);
+			//ft_printf("%s\n", str_args[i]);
 			error_call("Bad INTEGER input");
 		}
 		val = ft_atoimax(str_args[i]);
-		//printf("Converted integer is %zi\n", val);
+		//ft_printf("Converted integer is %zi\n", val);
 		if (val < INT_MIN || val > INT_MAX)
 			error_call("Value is out of INTEGER range");
 		if (stack_is_dup(a, val))

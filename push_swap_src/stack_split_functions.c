@@ -49,12 +49,12 @@ void		small_stack_sort(t_env *env)
 	int			min_ord;
 
 	// if (env)
-	// 	printf("IDITE NAHYI EBANYE STACKi\n");
+	// 	ft_printf("IDITE NAHYI EBANYE STACKi\n");
 
 	while (list_size(*(env->a)) > 3)
 	{
 		min_ord = min_val_pos(*(env->a));
-		//printf("Min pos: %i\n", min_ord);
+		//ft_printf("Min pos: %i\n", min_ord);
 		if (min_ord <= list_size(*(env->a)) / 2)
 			while (--min_ord)
 				command_dispatcher(env, "ra", 1);
@@ -78,7 +78,7 @@ void		small_stack_sort(t_env *env)
 
 	// //stack = *(env->a);
 	// min_val = min_in_stack(*(env->a));
-	// printf("Min value is: %i\n", min_val);
+	// ft_printf("Min value is: %i\n", min_val);
 
 	// if ((*(env->a))->val == min_val)
 	// 	command_dispatcher(env, "ra", 1);
@@ -108,7 +108,7 @@ void		small_stack_sort(t_env *env)
 	// 		command_dispatcher(env, "rra", 1);
 	// 		command_dispatcher(env, "sa", 1);
 	// 	}
-	// 	//printf("Empty loop\n");
+	// 	//ft_printf("Empty loop\n");
 	// 	//if ((*(env->a))->val > (*(env->a))->next->val)
 	// 	//	command_dispatcher(env, "sa", 1);
 	// 	//command_dispatcher(env, "ra", 1);
@@ -483,9 +483,9 @@ void		sort_three(t_env *env, t_plist *pa, int numb)
 	int		permA;
 	int		permB;
 
-	//printf("Sort three\n");
+	//ft_printf("Sort three\n");
 	// if (!pa)
-	// 	printf("THERE IS NO POINTER TO PA\n");
+	// 	ft_printf("THERE IS NO POINTER TO PA\n");
 
 	numa = pa ? pa->count : list_size(*(env->a));
 	numa = (numa > 3) ? 3 : numa;
@@ -533,7 +533,7 @@ int			rot_or_rrot(t_stack *stack, int piv, int (*ord)(), int (*has)())
 	int		stack_size;
 
 	// debug_info(stack, NULL, "test");
-	// printf("Pivot is: %i\n", piv);
+	// ft_printf("Pivot is: %i\n", piv);
 
 	stack_size = list_size(stack);
 	first = 1;
@@ -568,12 +568,12 @@ t_plist		*backpush_a(t_env *env, int piv)
 	if ((*(env->p_list))->b_is_rot == 1)
 		plist_len += (plist_len + 1) / 2;
 
-	// printf("Backpush A:\n");
-	// printf("The plist->count: %i\n", (*(env->p_list))->count);
-	// printf("The plist_len for iter: %i\n", plist_len);
-	// printf("The is_rot: %i\n", (*(env->p_list))->b_is_rot);
+	// ft_printf("Backpush A:\n");
+	// ft_printf("The plist->count: %i\n", (*(env->p_list))->count);
+	// ft_printf("The plist_len for iter: %i\n", plist_len);
+	// ft_printf("The is_rot: %i\n", (*(env->p_list))->b_is_rot);
 
-	// printf("The piv is: %i\n", piv);
+	// ft_printf("The piv is: %i\n", piv);
 	// debug_info(*(env->a), *(env->b), "test");
 
 	while (i < plist_len)
@@ -607,17 +607,17 @@ t_plist		*backpush_a(t_env *env, int piv)
 	
 	(*(env->p_list))->count -= pushed;
 
-	// printf("The pushed: %i\n", pushed);
-	// printf("The new plist->count %i\n", (*(env->p_list))->count);
+	// ft_printf("The pushed: %i\n", pushed);
+	// ft_printf("The new plist->count %i\n", (*(env->p_list))->count);
 
 	i = plist_len - pushed;
 	if ((*(env->p_list))->count <= 3)
 	{
-		//printf("Enter the if statement with i = %i\n", i);
+		//ft_printf("Enter the if statement with i = %i\n", i);
 		// restore stack b
 		if ((*(env->p_list))->b_is_rot)
 		{
-			//printf("Before rrb loop with i = %i\n", i);
+			//ft_printf("Before rrb loop with i = %i\n", i);
 			while (i--)
 				command_dispatcher(env, "rrb", 1);
 			(*(env->p_list))->b_is_rot = 0;
@@ -633,7 +633,7 @@ t_plist		*backpush_b(t_env *env, int piv, t_plist **a_push, int *rot_ca)
 	int		pushed;
 	int		r_or_rr;
 
-	//printf("Backpush B:\n");
+	//ft_printf("Backpush B:\n");
 
 	pushed = 0;
 	while (has_lower_piv(*(env->a), piv))
@@ -665,13 +665,13 @@ void		restore_a(t_env *env, int *rot_ca)
 {
 	if (*rot_ca > 0)
 	{
-		//printf("Restore A commands: \n");
+		//ft_printf("Restore A commands: \n");
 		while ((*rot_ca)--)
 			command_dispatcher(env, "rra", 1);
 	}
 	else if (*rot_ca < 0)
 	{
-		//printf("Restore A commands: \n");
+		//ft_printf("Restore A commands: \n");
 		while ((*rot_ca)++)
 			command_dispatcher(env, "ra", 1);
 	}
@@ -738,7 +738,7 @@ void		stack_main_split(t_env *env)
 
 	pushed_total = 0;
 
-	//printf("Commands for main split:\n");
+	//ft_printf("Commands for main split:\n");
 
 	while (list_size(*(env->a)) > 3)
 	{
@@ -762,7 +762,7 @@ void		stack_main_split(t_env *env)
 		pushed_total += pushed;
 	}
 
-	//printf("Commands for stack-sort:\n");
+	//ft_printf("Commands for stack-sort:\n");
 
 	// Sort start
 	numb = push_list->count > 3 ? 0 : push_list->count;
