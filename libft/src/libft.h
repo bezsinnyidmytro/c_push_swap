@@ -105,6 +105,8 @@ void				*ft_lst_concat(t_list *lst);
 size_t				ft_lstcount(t_list *lst);
 void				ft_lstrev(t_list **alst);
 void				ft_swap_int(int *a, int *b);
+char				*ft_uitoa_base(size_t val, int base);
+char				*ft_strndup(const char *s1, unsigned int n);
 
 int					get_next_line(int const fd, char **line);
 
