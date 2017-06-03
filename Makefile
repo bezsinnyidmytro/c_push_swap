@@ -43,26 +43,29 @@ PUSH_SWAP_OBJ =		$(PUSH_SWAP_SRC:.c=.o) $(COMMON_SRC:.c=.o)
 
 OBJ = 				$(CHECKER_OBJ) $(PUSH_SWAP_OBJ)
 FLAGS = 			-Wall -Werror -Wextra
+LIBFT =				libft.a
 
-all: $(CHECKER_NAME) $(PUSH_SWAP_NAME)
+all: $(LIBFT) $(CHECKER_NAME) $(PUSH_SWAP_NAME)
+
+$(LIBFT):
+	make -C ./libft
 
 $(CHECKER_NAME): $(CHECKER_OBJ)
-	gcc -o $(CHECKER_NAME) $(CHECKER_OBJ) -L ./ -lft
+	gcc -o $(CHECKER_NAME) $(CHECKER_OBJ) -L ./libft -lft
 
 $(PUSH_SWAP_NAME): $(PUSH_SWAP_OBJ)
-	gcc -o $(PUSH_SWAP_NAME) $(PUSH_SWAP_OBJ) -L ./ -lft
+	gcc -o $(PUSH_SWAP_NAME) $(PUSH_SWAP_OBJ) -L ./libft -lft
 
 %.o: %.c
 	gcc -c $(FLAGS) -c -o $@ $<
 
 clean:
+	@make clean -C ./libft
 	@rm -f $(OBJ)
 
 fclean: clean
+	make fclean -C ./libft
 	rm -f $(CHECKER_NAME)
 	rm -f $(PUSH_SWAP_NAME)
 
 re: fclean all
-
-
-	# clang -o push_swap checker.o -L ./ -lft

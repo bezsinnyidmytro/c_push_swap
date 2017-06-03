@@ -46,7 +46,8 @@ void			command_dispatcher(t_env *env, char *cmd, int announce)
 
 	a = env->a;
 	b = env->b;
-	if ((announce || (env->flag_mask & 1) == 1) && (++(env->op_count)))
+	(env->op_count)++;
+	if (announce)
 		ft_printf("%s\n", cmd);
 	if (ft_strcmp(cmd, "pa") == 0)
 		push(a, pop(b));
