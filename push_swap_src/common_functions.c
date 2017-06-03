@@ -12,26 +12,14 @@
 
 #include "../includes/push_swap.h"
 
-int				*ps_flag_parse(int ac, char **av)
+int				list_size(t_stack *list)
 {
-	int			*res_c_m;
+	int		count;
 
-	res_c_m = (int *)malloc(sizeof(int) * 2);
-	res_c_m[0] = 0;
-	res_c_m[1] = 0;
-	while (res_c_m[0] + 1 < ac && (ft_strcmp(av[res_c_m[0] + 1], "-d") == 0 ||
-		ft_strcmp(av[res_c_m[0] + 1], "-t") == 0 ||
-		ft_strcmp(av[res_c_m[0] + 1], "-w") == 0))
-	{
-		if (ft_strcmp(av[res_c_m[0] + 1], "-d") == 0)
-			res_c_m[1] = (res_c_m[1] | 1);
-		if (ft_strcmp(av[res_c_m[0] + 1], "-t") == 0)
-			res_c_m[1] = (res_c_m[1] | 2);
-		if (ft_strcmp(av[res_c_m[0] + 1], "-w") == 0)
-			res_c_m[1] = (res_c_m[1] | 4);
-		res_c_m[0]++;
-	}
-	return (res_c_m);
+	count = 0;
+	while (list && (++count))
+		list = list->next;
+	return (count);
 }
 
 int				is_sign_or_digit(char ch)
@@ -41,59 +29,7 @@ int				is_sign_or_digit(char ch)
 	return (0);
 }
 
-int				check_str(const char *str, int (*f)(char))
-{
-	while (*str)
-	{
-		if (!(*f)(*str))
-			return (0);
-		str++;
-	}
-	return (1);
-}
-
-int				stack_is_dup(t_stack *stack, int check_val)
-{
-	while (stack)
-	{
-		if (stack->val == check_val)
-			return (1);
-		stack = stack->next;
-	}
-	return (0);
-}
-
-int				srt_asc(int a, int b)
-{
-	return (b >= a);
-}
-
-int				is_sorted(t_stack *s_top, int (*f)())
-{
-	t_stack		*tmp;
-
-	tmp = s_top;
-	while (tmp->next)
-	{
-		if (!(*f)(tmp->val, tmp->next->val))
-			return (0);
-		tmp = tmp->next;
-	}
-	return (1);
-}
-
-void			error_call(char *message)
-{
-	ft_putstr(KRED);
-	write(2, "Error. ", 7);
-	if (message)
-		write(2, message, ft_strlen(message));
-	write(2, ".\n", 2);
-	ft_putstr(KNRM);
-	exit(1);
-}
-
-void			printf_justified(int *a, int *b)
+static void		printf_justified(int *a, int *b)
 {
 	int			alen;
 	int			blen;
@@ -121,7 +57,7 @@ void			printf_justified(int *a, int *b)
 	ft_printf(" |\n");
 }
 
-void			debug_put_stacks(t_stack *a, t_stack *b)
+static void		debug_put_stacks(t_stack *a, t_stack *b)
 {
 	while (a || b)
 	{
@@ -156,132 +92,4 @@ void			debug_info(t_stack *a, t_stack *b, char *cmd, int flag_mask)
 	ft_printf("\n\n");
 	if ((flag_mask & 2) == 2)
 		sleep(1);
-}
-
-t_stack			*s_el_create(int val)
-{
-	t_stack		*el;
-
-	el = (t_stack *)malloc(sizeof(t_stack));
-	el->val = val;
-	el->next = NULL;
-	return (el);
-}
-
-void			command_dispatcher_c(t_env *env, char *cmd)
-{
-	t_stack		**a;
-	t_stack		**b;
-
-	a = env->a;
-	b = env->b;
-	if (ft_strcmp(cmd, "rb") == 0)
-		rotate(b);
-	else if (ft_strcmp(cmd, "rr") == 0)
-	{
-		rotate(a);
-		rotate(b);
-	}
-	else if (ft_strcmp(cmd, "rra") == 0)
-		rrotate(a);
-	else if (ft_strcmp(cmd, "rrb") == 0)
-		rrotate(b);
-	else if (ft_strcmp(cmd, "rrr") == 0)
-	{
-		rrotate(a);
-		rrotate(b);
-	}
-	else
-		error_call(ft_strjoin("Invalid instruction: ", cmd));
-}
-
-void			command_dispatcher(t_env *env, char *cmd, int announce)
-{
-	t_stack		**a;
-	t_stack		**b;
-
-	a = env->a;
-	b = env->b;
-	if ((announce || (env->flag_mask & 1) == 1) && (++(env->op_count)))
-		ft_printf("%s\n", cmd);
-	if (ft_strcmp(cmd, "pa") == 0)
-		push(a, pop(b));
-	else if (ft_strcmp(cmd, "pb") == 0)
-		push(b, pop(a));
-	else if (ft_strcmp(cmd, "sa") == 0)
-		swap(a);
-	else if (ft_strcmp(cmd, "sb") == 0)
-		swap(b);
-	else if (ft_strcmp(cmd, "ss") == 0)
-	{
-		swap(a);
-		swap(b);
-	}
-	else if (ft_strcmp(cmd, "ra") == 0)
-		rotate(a);
-	else
-		command_dispatcher_c(env, cmd);
-}
-
-int				str_arr_free(char **arr)
-{
-	while (*arr)
-	{
-		free(*arr);
-		arr++;
-	}
-	return (1);
-}
-
-void			put_val_to_stack(t_stack **a, char *arg)
-{
-	intmax_t	val;
-
-	if (!check_str(arg, &is_sign_or_digit))
-		error_call("Bad INTEGER input");
-	val = ft_atoimax(arg);
-	if (val < INT_MIN || val > INT_MAX)
-		error_call("Value is out of INTEGER range");
-	if (stack_is_dup(*a, val))
-		error_call("Integer value duplicates are forbidden");
-	push(a, s_el_create(val));
-}
-
-t_stack			*init_stack(int n_arg, char **av)
-{
-	t_stack		*a;
-	int			i;
-	char		**str_args;
-
-	a = NULL;
-	i = n_arg;
-	str_args = av;
-	if (n_arg == 1)
-	{
-		str_args = ft_strsplit(av[0], ' ');
-		i = ft_countwords(av[0], ' ');
-		if (i == 0)
-			exit(1);
-	}
-	while (--i >= 0)
-		put_val_to_stack(&a, str_args[i]);
-	if (a == NULL)
-		error_call("Memalloc error. Or empty argument list");
-	if (n_arg == 1 && str_arr_free(str_args))
-		free(str_args);
-	return (a);
-}
-
-t_env			*init_env(t_stack **a, t_stack **b, int flag_mask)
-{
-	t_env		*env;
-
-	env = (t_env *)malloc(sizeof(t_env));
-	env->a = a;
-	env->b = b;
-	env->sort = NULL;
-	env->p_list = NULL;
-	env->flag_mask = flag_mask;
-	env->op_count = 0;
-	return (env);
 }

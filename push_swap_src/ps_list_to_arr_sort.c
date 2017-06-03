@@ -12,7 +12,7 @@
 
 #include "../includes/push_swap.h"
 
-int			*list_to_arr(t_stack *s_top, size_t num_el)
+static int	*list_to_arr(t_stack *s_top, size_t num_el)
 {
 	size_t	i;
 	int		*res;
@@ -29,11 +29,6 @@ int			*list_to_arr(t_stack *s_top, size_t num_el)
 	return (res);
 }
 
-int			asc(int a, int b)
-{
-	return (a <= b);
-}
-
 int			is_sorted_tab(int *tab, int s, int e, int (*f)(int, int))
 {
 	while (s < e)
@@ -48,7 +43,7 @@ int			is_sorted_tab(int *tab, int s, int e, int (*f)(int, int))
 	return (1);
 }
 
-void		arr_qsort_swap(int *a, int *b)
+static void	arr_qsort_swap(int *a, int *b)
 {
 	int		tmp;
 
@@ -57,7 +52,7 @@ void		arr_qsort_swap(int *a, int *b)
 	*b = tmp;
 }
 
-void		arr_qsort(int s, int e, int *arr, int *swaps)
+static void	arr_qsort(int s, int e, int *arr, int *swaps)
 {
 	int		l;
 	int		r;
@@ -82,16 +77,6 @@ void		arr_qsort(int s, int e, int *arr, int *swaps)
 		arr_qsort(s, r, arr, swaps);
 	if (l < e)
 		arr_qsort(l, e, arr, swaps);
-}
-
-int			list_size(t_stack *list)
-{
-	int		count;
-
-	count = 0;
-	while (list && (++count))
-		list = list->next;
-	return (count);
 }
 
 int			*list_to_arr_sort(t_stack *list)
