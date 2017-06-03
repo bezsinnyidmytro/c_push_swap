@@ -38,7 +38,7 @@ t_stack			*pop(t_stack **s_top)
 }
 
 void			swap(t_stack **s_top)
-{	
+{
 	t_stack			*second;
 
 	if ((*s_top) && (*s_top)->next)

@@ -12,14 +12,26 @@
 
 #include "../includes/push_swap.h"
 
-int				ps_flag_parse(int ac, char **av)		// need to parse flag structure or something like this
+int				*ps_flag_parse(int ac, char **av)
 {
-	int			count;
+	int			*res_c_m;
 
-	count = 0;
-	while (count + 1 < ac && ft_strcmp(av[count + 1], "-d") == 0)
-		count++;
-	return (count);
+	res_c_m = (int *)malloc(sizeof(int) * 2);
+	res_c_m[0] = 0;
+	res_c_m[1] = 0;
+	while (res_c_m[0] + 1 < ac && (ft_strcmp(av[res_c_m[0] + 1], "-d") == 0 ||
+		ft_strcmp(av[res_c_m[0] + 1], "-t") == 0 ||
+		ft_strcmp(av[res_c_m[0] + 1], "-w") == 0))
+	{
+		if (ft_strcmp(av[res_c_m[0] + 1], "-d") == 0)
+			res_c_m[1] = (res_c_m[1] | 1);
+		if (ft_strcmp(av[res_c_m[0] + 1], "-t") == 0)
+			res_c_m[1] = (res_c_m[1] | 2);
+		if (ft_strcmp(av[res_c_m[0] + 1], "-w") == 0)
+			res_c_m[1] = (res_c_m[1] | 4);
+		res_c_m[0]++;
+	}
+	return (res_c_m);
 }
 
 int				is_sign_or_digit(char ch)
@@ -132,7 +144,7 @@ void			debug_put_stacks(t_stack *a, t_stack *b)
 	}
 }
 
-void			debug_info(t_stack *a, t_stack *b, char *cmd)
+void			debug_info(t_stack *a, t_stack *b, char *cmd, int flag_mask)
 {
 	if (cmd)
 		ft_printf("\n\tCommand: %s\n", cmd);
@@ -142,6 +154,8 @@ void			debug_info(t_stack *a, t_stack *b, char *cmd)
 	debug_put_stacks(a, b);
 	ft_printf("\t----------------------------\n");
 	ft_printf("\n\n");
+	if ((flag_mask & 2) == 2)
+		sleep(1);
 }
 
 t_stack			*s_el_create(int val)
@@ -188,7 +202,7 @@ void			command_dispatcher(t_env *env, char *cmd, int announce)
 
 	a = env->a;
 	b = env->b;
-	if (announce)
+	if ((announce || (env->flag_mask & 1) == 1) && (++(env->op_count)))
 		ft_printf("%s\n", cmd);
 	if (ft_strcmp(cmd, "pa") == 0)
 		push(a, pop(b));
@@ -258,7 +272,7 @@ t_stack			*init_stack(int n_arg, char **av)
 	return (a);
 }
 
-t_env			*init_env(t_stack **a, t_stack **b)
+t_env			*init_env(t_stack **a, t_stack **b, int flag_mask)
 {
 	t_env		*env;
 
@@ -267,5 +281,7 @@ t_env			*init_env(t_stack **a, t_stack **b)
 	env->b = b;
 	env->sort = NULL;
 	env->p_list = NULL;
+	env->flag_mask = flag_mask;
+	env->op_count = 0;
 	return (env);
 }

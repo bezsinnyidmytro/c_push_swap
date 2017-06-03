@@ -1,13 +1,18 @@
-#include <stdlib.h>
-#include <stdio.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   push_swap_list_to_arr_sort.c                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dbezsinn <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/06/03 14:26:01 by dbezsinn          #+#    #+#             */
+/*   Updated: 2017/06/03 14:26:03 by dbezsinn         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/push_swap.h"
 
-#define S 1;
-#define E 2;
-#define L 3;
-#define R 4;
-
-int		*list_to_arr(t_stack *s_top, size_t num_el)
+int			*list_to_arr(t_stack *s_top, size_t num_el)
 {
 	size_t	i;
 	int		*res;
@@ -24,12 +29,12 @@ int		*list_to_arr(t_stack *s_top, size_t num_el)
 	return (res);
 }
 
-int		asc(int a, int b)
+int			asc(int a, int b)
 {
 	return (a <= b);
 }
 
-int		is_sorted_tab(int *tab, int s, int e, int (*f)(int, int))
+int			is_sorted_tab(int *tab, int s, int e, int (*f)(int, int))
 {
 	while (s < e)
 	{
@@ -43,7 +48,7 @@ int		is_sorted_tab(int *tab, int s, int e, int (*f)(int, int))
 	return (1);
 }
 
-void	arr_qsort_swap(int *a, int *b)
+void		arr_qsort_swap(int *a, int *b)
 {
 	int		tmp;
 
@@ -52,7 +57,7 @@ void	arr_qsort_swap(int *a, int *b)
 	*b = tmp;
 }
 
-void	arr_qsort(int s, int e, int *arr, int *swaps)
+void		arr_qsort(int s, int e, int *arr, int *swaps)
 {
 	int		l;
 	int		r;
@@ -79,7 +84,7 @@ void	arr_qsort(int s, int e, int *arr, int *swaps)
 		arr_qsort(l, e, arr, swaps);
 }
 
-int		list_size(t_stack *list)
+int			list_size(t_stack *list)
 {
 	int		count;
 
@@ -89,7 +94,7 @@ int		list_size(t_stack *list)
 	return (count);
 }
 
-int		*list_to_arr_sort(t_stack *list)
+int			*list_to_arr_sort(t_stack *list)
 {
 	int		*int_tab;
 	int		tab_size;

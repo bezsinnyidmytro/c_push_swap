@@ -45,7 +45,8 @@ typedef struct 		s_env
 	t_stack			**b;
 	t_plist			**p_list;
 	int				*sort;
-	int				b_is_rot;
+	int				flag_mask;
+	int 			op_count;
 }					t_env;
 
 int 				srt_asc(int a, int b);
@@ -61,14 +62,14 @@ void				rotate(t_stack **s_top);
 void				rrotate(t_stack **s_top);
 void				command_dispatcher(t_env *env, char *cmd, int announce);
 t_stack				*init_stack(int n_arg, char **av);
-t_env				*init_env(t_stack **a, t_stack **b);
-int					ps_flag_parse(int ac, char **av);
+t_env				*init_env(t_stack **a, t_stack **b, int flag_mask);
+int					*ps_flag_parse(int ac, char **av);
 int					list_size(t_stack *stack);
 void				small_stack_sort(t_env *env);
 
 int					*list_to_arr_sort(t_stack *list);
 
-void				debug_info(t_stack *a, t_stack *b, char *cmd);
+void				debug_info(t_stack *a, t_stack *b, char *cmd, int flag_mask);
 
 void				stack_main_split(t_env *env);
 
