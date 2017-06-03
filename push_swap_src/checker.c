@@ -103,9 +103,9 @@ int				main(int ac, char **av)
 		// 	push(&b, pop_el);
 		
 		if (is_sorted(*(env->a), &srt_asc) && !(*(env->b)))
-			ft_printf("%sOK\n", KGRN);
+			ft_printf("%sOK%s\n", KGRN, KNRM);
 		else
-			ft_printf("%sKO\n", KRED);
+			ft_printf("%sKO%s\n", KRED, KNRM);
 		// if (!debug)
 		// {
 			// Print values form A
@@ -127,7 +127,7 @@ int				main(int ac, char **av)
 		// 	ft_printf("\n");
 		// }
 	}
-	// while (1);
+	while (1);
 	return (1);
 }
 

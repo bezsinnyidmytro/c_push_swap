@@ -563,10 +563,11 @@ void		stacks_sort(t_env *env, int full_size)
 	while (*(env->p_list))
 	{
 		sort_size = list_size(*(env->a));
-		piv2 = env->sort[(2 * full_size - 2 * sort_size - (*(env->p_list))->count) / 2];
-		if ((*(env->p_list))->to == 'B' && (*(env->p_list))->count > 3)			// probably can delete if-part->to == 'B'
+		piv2 = env->sort[(2 * full_size - 2 * sort_size -
+			(*(env->p_list))->count) / 2];
+		if ((*(env->p_list))->to == 'B' && (*(env->p_list))->count > 3)
 			a_push = backpush_a(env, piv2);
-		else if ((*(env->p_list))->to == 'B' && (*(env->p_list))->count <= 3)	// add for UBUNTU
+		else if ((*(env->p_list))->to == 'B' && (*(env->p_list))->count <= 3)
 			a_push = NULL;
 		while (a_push && a_push->count > 3)
 		{
@@ -578,6 +579,18 @@ void		stacks_sort(t_env *env, int full_size)
 	}
 }
 
+void		sort_init(t_env *env, t_plist **push_list, int stack_len)
+{
+	int		numb;
+
+	numb = (*push_list)->count > 3 ? 0 : (*push_list)->count;
+	sort_three(env, NULL, numb);
+	if (numb != 0)
+		plist_pop_free(push_list);
+	env->p_list = push_list;
+	stacks_sort(env, stack_len);
+}
+
 void		stack_main_split(t_env *env)
 {
 	int		stack_len;
@@ -585,7 +598,6 @@ void		stack_main_split(t_env *env)
 	int		piv;
 	int		pushed_total;
 	int		pushed;
-	int		numb;
 
 	push_list = NULL;
 	stack_len = list_size(*(env->a));
@@ -605,10 +617,5 @@ void		stack_main_split(t_env *env)
 		plist_push(&push_list, plist_el_create(pushed, 'B'));
 		pushed_total += pushed;
 	}
-	numb = push_list->count > 3 ? 0 : push_list->count;
-	sort_three(env, NULL, numb);
-	if (numb != 0)
-		plist_pop_free(&push_list);
-	env->p_list = &push_list;
-	stacks_sort(env, stack_len);
+	sort_init(env, &push_list, stack_len);
 }

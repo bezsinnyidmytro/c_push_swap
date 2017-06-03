@@ -89,6 +89,6 @@ int			main(int ac, char **av)
 		// else
 		// 	ft_printf("%sKO\n", KRED);
 	}
-	// while (1);
+	while (1);
 	return (1);
 }
