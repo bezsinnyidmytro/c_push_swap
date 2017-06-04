@@ -48,7 +48,7 @@ LIBFT =				libft.a
 all: $(LIBFT) $(CHECKER_NAME) $(PUSH_SWAP_NAME)
 
 $(LIBFT):
-	make -C ./libft
+	@make -C ./libft
 
 $(CHECKER_NAME): $(CHECKER_OBJ)
 	gcc -o $(CHECKER_NAME) $(CHECKER_OBJ) -L ./libft -lft

@@ -48,7 +48,7 @@ static void		put_val_to_stack(t_stack **a, char *arg)
 {
 	intmax_t	val;
 
-	if (!check_str(arg, &is_sign_or_digit))
+	if (!check_str(arg, &is_sign_or_digit))				// need to free stack_a on error (can't be monitored)
 		error_call("Bad INTEGER input");
 	val = ft_atoimax(arg);
 	if (val < INT_MIN || val > INT_MAX)
@@ -75,7 +75,7 @@ t_stack			*init_stack(int n_arg, char **av)
 			exit(1);
 	}
 	while (--i >= 0)
-		put_val_to_stack(&a, str_args[i]);
+		put_val_to_stack(&a, str_args[i]);				// need to free str_args on n_arg == 1 and error (can't be monitored)
 	if (a == NULL)
 		error_call("Memalloc error. Or empty argument list");
 	if (n_arg == 1 && str_arr_free(str_args))

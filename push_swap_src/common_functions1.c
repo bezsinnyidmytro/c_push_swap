@@ -55,13 +55,15 @@ int				is_sorted(t_stack *s_top, int (*f)())
 
 void			error_call(char *message)
 {
-	ft_putstr(KRED);
-	write(2, "Error. ", 7);
+	ft_putstr_fd(KRED, 2);
+	//write(2, "Error. ", 7);
+	ft_putstr_fd("Error. ", 2);
 	if (message)
-		write(2, message, ft_strlen(message));
-	write(2, ".\n", 2);
-	ft_putstr(KNRM);
-	exit(1);
+		ft_putstr_fd(message, 2); //write(2, message, ft_strlen(message));
+	ft_putstr_fd(".\n", 2); //write(2, ".\n", 2);
+	ft_putstr_fd(KNRM, 2);
+	//sleep(2324234);
+	exit(1);				// exit should not be here
 }
 
 t_stack			*s_el_create(int val)
