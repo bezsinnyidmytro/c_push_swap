@@ -12,16 +12,25 @@
 
 #include "../includes/push_swap.h"
 
-void			ft_free_stack(t_stack *a)
+void			ft_free_env(t_env *env)
 {
 	t_stack	*to_free;
 
-	while (a)
+	if (env->sort)
+		free(env->sort);
+	while (*(env->a))
 	{
-		to_free = pop(&a);
+		to_free = pop(env->a);
 		to_free->next = NULL;
 		free(to_free);
 	}
+	while (*(env->b))
+	{
+		to_free = pop(env->b);
+		to_free->next = NULL;
+		free(to_free);
+	}
+	free(env);
 }
 
 void			process_commands(t_env *env, int *flags_c_m)
@@ -63,16 +72,15 @@ int				main_1(int ac, char **av)
 			ft_printf("%sOK%s\n", KGRN, KNRM);
 		else
 			ft_printf("%sKO%s\n", KRED, KNRM);
-		ft_free_stack(a);
-		free(env);
+		ft_free_env(env);
 	}
 	free(flags_c_m);
 	return (1);
 }
 
-int				main(int ac, char **av)				// for leaks check - leaks in main
+int				main(int ac, char **av)
 {
 	main_1(ac, av);
-	//sleep(324234);
+	sleep(1233435);
 	return (0);
 }

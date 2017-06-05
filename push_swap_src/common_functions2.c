@@ -36,7 +36,7 @@ static void		command_dispatcher_c(t_env *env, char *cmd)
 		rrotate(b);
 	}
 	else
-		error_call(ft_strjoin("Invalid instruction: ", cmd));		// need to free env here and all of its pointers
+		error_call(ft_strjoin("Invalid instruction: ", cmd));
 }
 
 void			command_dispatcher(t_env *env, char *cmd, int announce)
