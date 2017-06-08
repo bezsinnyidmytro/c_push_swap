@@ -64,6 +64,5 @@ int				main_1(int ac, char **av)
 int				main(int ac, char **av)
 {
 	main_1(ac, av);
-	sleep(324234);
 	return (0);
 }

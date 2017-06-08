@@ -44,6 +44,8 @@ int				is_sorted(t_stack *s_top, int (*f)())
 	t_stack		*tmp;
 
 	tmp = s_top;
+	if (!tmp)
+		return (0);
 	while (tmp->next)
 	{
 		if (!(*f)(tmp->val, tmp->next->val))
@@ -61,7 +63,6 @@ void			error_call(char *message)
 		ft_putstr_fd(message, 2);
 	ft_putstr_fd(".\n", 2);
 	ft_putstr_fd(KNRM, 2);
-	sleep(1233545);
 	exit(1);
 }
 
